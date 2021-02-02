@@ -1,0 +1,128 @@
+@import '../../variables.scss';
+
+
+.chats {
+  width: 100%;
+  height: calc(100vh - 45px);
+  padding-top: 10px;
+  overflow: auto;
+}
+
+
+.chats__list {
+  width: 97%;
+  margin: 0 auto;
+}
+
+.chats__item {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: transparentize($secondary, 0.3);
+  width: 100%;
+  height: 55px;
+  border-radius: 5px;
+  padding: 6px 15px;
+  margin-bottom: 4px;
+  white-space: nowrap;
+
+  .chats__name {
+    margin-bottom: 0;
+  }
+
+  &:hover {
+    background-color: transparentize($secondary, 0.5);
+  }
+}
+
+.chats__avatar {
+  width: 36px;
+  height: 36px;
+  margin-right: 23px;
+}
+
+.chats__item-info {
+  display: flex;
+  flex-direction: column;
+  padding-right: 25px;
+}
+
+.chats__content {
+  width: 250px;
+  overflow: hidden; 
+  text-overflow: ellipsis;
+}
+
+.chats__datetime {
+  position: absolute;
+  font-size: 11px;
+  top: 5px;
+  right: 5px;
+}
+
+
+@media (min-width: $tablet-width) {
+
+  .chats {
+    height: calc(100vh - 50px);
+  }
+
+  .chats__item {
+    height: 77px;
+    padding: 6px 30px;
+  }
+
+  .chats__avatar {
+    width: 50px;
+    height: 50px;
+    margin-right: 21px;
+  }
+
+  .chats__content {
+    width: 400px;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+  }
+
+
+  .chats__datetime {
+    top: 12px;
+    right: 15px;
+  }
+}
+
+
+@media (min-width: $desktop-width) {
+
+  .chats {
+    width: 350px;
+    height: auto;
+    overflow: auto;
+  }
+
+  .chats__item {
+    height: 47px;
+    padding: 5px 15px;
+  }
+
+  .chats__avatar {
+    width: 36px;
+    height: 36px;
+    margin-right: 14px;
+  }
+
+   .chats__content {
+    width: 225px;
+  }
+
+  .chats__title {
+    padding-left: 40px;
+  }
+
+  .chats__datetime {
+    font-size: 11px;
+    top: 5px;
+    right: 7px;
+  }
+}

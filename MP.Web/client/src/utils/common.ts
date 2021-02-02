@@ -1,0 +1,1 @@
+export const extend = <T extends unknown> (a: unknown, b: unknown): T => Object.assign({} as T, a, b);

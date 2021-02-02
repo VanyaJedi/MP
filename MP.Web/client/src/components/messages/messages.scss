@@ -1,0 +1,132 @@
+@import '../../variables.scss';
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: absolute;
+  z-index: $popup-index;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: $primary;
+  overflow: hidden;
+}
+
+.messages__header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  background-color: $secondary;
+  height: 40px;
+  padding: 0 10px;
+}
+
+.messages__back-btn {
+  margin-right: 10px;
+}
+
+.messages__avatar {
+  margin-right: 5px;
+}
+
+.messages__chatname {
+  margin: 0;
+}
+
+.messages__list {
+  display: flex;
+  flex-direction: column;
+  width: 97%;
+  margin: 0 auto;
+  list-style: none;
+  height: calc(100vh - 107px);
+  max-height: calc(100vh - 107px);
+  overflow: auto;
+}
+
+.messages__inner {
+  position: relative;
+  flex-basis: auto;
+  min-width: 145px;
+  max-width: 220px;
+  font-size: 12px;
+  line-height: 14px;
+  word-break: break-all;
+  padding: 12px;
+  border-radius: 30px 20px 30px 20px;
+  margin-left: 40px;
+}
+
+.messages__item {
+  display: flex;
+  margin-bottom: 8px;
+
+  .messages__datetime {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+  }
+
+  &--mine {
+    justify-content: flex-end;
+    
+    .messages__inner {
+      background-color: $my-message;   
+    }
+
+    .messages__datetime {
+      left: -27px;
+    }
+  }
+
+  &--not-mine {
+    flex-direction: column;
+
+    .messages__inner {
+      background-color: $guest-message; 
+    }
+
+    .messages__datetime {
+      right: -27px;
+    }
+  }
+  
+}
+
+
+
+@media (min-width: $tablet-width) { 
+
+  .messages__inner {
+    min-width: 223px;
+    max-width: 465px;
+    padding: 21px 13px;
+    font-size: 14px;
+  }
+}
+
+
+@media (min-width: $desktop-width) { 
+  .messages {
+    position: static;
+    width: auto;
+    background-color: transparent;
+    height: auto;
+  }
+
+  .messages__header {
+    background-color: transparent;
+  }
+
+  .messages__inner {
+    min-width: 258px;
+    max-width: 606px;
+    padding: 21px 13px;
+    font-size: 14px;
+  }
+  
+
+}

@@ -1,0 +1,74 @@
+@import '../../variables.scss';
+
+
+.nav {
+  position: absolute;
+  z-index: $nav-index;
+  bottom: 34px;
+  display: flex;
+  align-items: center;
+}
+
+.nav__item {
+  margin-right: 15px;
+  height: 63px;
+  width: 63px;
+  background-color: $nav-button;
+  border-radius: 50%;
+  box-shadow: $white-shadow;
+
+  .nav__item-svg {
+    background-color: transparent;
+    font-size: 25px;
+    color: #8A8A8A;
+
+      &:hover {
+      opacity: 0.3;
+    }
+  }
+
+  &--active {
+    background-color: $nav-button-active;
+
+    .nav__item-svg {
+      color: #ffffff;
+    }  
+  }
+}
+
+
+@media (min-width: $tablet-width) {
+
+  .nav {
+    bottom: 84px;
+  }
+
+  .nav__item { 
+    height: 82px;
+    width: 82px;
+
+    .nav__item-svg { 
+      font-size: 30px;
+    }
+  }
+}
+
+
+@media (min-width: $desktop-width) {
+  .nav {
+    position: static;
+  }
+
+  .nav__item {
+    margin-right: 15px;
+    height: 40px;
+    width: 40px;
+    //background-color: transparent;
+
+    .nav__item-svg {
+      font-size: 20px;
+    }
+  }
+
+  
+}

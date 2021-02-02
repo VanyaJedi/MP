@@ -1,0 +1,49 @@
+@import '../../variables.scss';
+
+.typing-area {
+  overflow: auto;
+  min-height: 50px;
+  flex-grow: 0;
+  width: 97.86%;
+  margin: 0 auto;
+  max-height: 250px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: end;
+  border-radius: 4px;
+  background-color: $type-area;
+  padding-right: 5px;
+}
+
+.typing-area__text {
+  flex-grow: 1;
+  padding: 8px 16px;
+  min-height: 30px;
+  word-wrap: break-word;
+  overflow-y: auto;
+  border: 1px solid transparent;
+  font-weight: 500;
+  color: $light-color;
+  outline: 0px solid transparent;
+
+  &:empty::before {
+    content: "Введите текст сообщения...";
+  }
+
+  &:focus {
+    color: #ffffff;
+  }
+}
+
+.typing-area__send-btn {
+  flex-shrink: 0;
+}
+
+
+@media (min-width: $desktop-width) {
+
+  .typing-area {
+    max-width: 1000px;
+  }
+}
