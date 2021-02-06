@@ -13,7 +13,7 @@ import { AuthData } from '../../types/interfaces';
 import Login from './login';
 import Reset from './reset';
 import Register from './register';
-
+import { start } from '../../signalR';
 
 const Auth = () => {
   const [formType, setFormType] = useState('login');
@@ -31,7 +31,11 @@ const Auth = () => {
       if(isSuccess) {
         history.push(Routes.ROOT);  
       }
-    });
+      return start()
+    })
+    .then(() => {
+      dispatch(ActionCreatorApp.setHubConnectionState(true))
+    })
   }, []);
 
   const onRegisterSubmit = useCallback((values: any) => {

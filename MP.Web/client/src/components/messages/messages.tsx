@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from 'react';
-import { Button } from 'antd';
+import React, { useRef, useEffect, useCallback, useLayoutEffect } from 'react';
+import { Button, Spin } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import { useSelector, useDispatch } from 'react-redux'
-import { getActiveChatId, getActiveChatMessages, getMessagesFetchingStatus } from '../../reducers/messenger/selectors';
+import { getActiveChatId, getActiveChatMessages, getMessagesFetchingStatus, getChats, getMessages } from '../../reducers/messenger/selectors';
+import { getUser } from '../../reducers/user/selectors';
 import { getMobileMessengerState, getHubConnectionState } from '../../reducers/app/selectors';
 import defaultAvatar from '../../assets/images/default-avatar.png';
 import ProfileLink from '../profile-link/profile-link';
@@ -14,6 +15,7 @@ import { ActionCreator as ActionCreatorApp } from '../../reducers/app/app';
 import { Operation as MessengerOperation } from '../../reducers/messenger/messenger';
 import TypingArea from '../typing-area/typing-area';
 import hubConnection from '../../signalR';
+import { MessageStatus } from '../../constants';
 
 import './messages.scss';
 
@@ -22,29 +24,39 @@ const Messages: React.FunctionComponent = () => {
   const dispatch = useDispatch();
   const messageListRef = useRef<HTMLUListElement>(null);
 
+  const user = useSelector(getUser);
+  const chatEntity = useSelector(getChats);
+  const messageEntity = useSelector(getMessages);
   const activeChat = useSelector(getActiveChatId);
-  const chatMessages = useSelector(getActiveChatMessages);
+  const activeMessagesIds = useSelector(getActiveChatMessages);
   const isMobileMessagesAreaOpen = useSelector(getMobileMessengerState);
   const isHubConnected = useSelector(getHubConnectionState);
   const isFetching = useSelector(getMessagesFetchingStatus);
-
   const isDesktop = useMediaQuery(mediaQueries.desktop);
 
-  useEffect(() => {
+  const messages = messageEntity.byId;
+
+  const scrollDown = useCallback(() => {
     if (messageListRef.current) {
       messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
     }
-    if (activeChat) {
-      dispatch(MessengerOperation.updateMessages(activeChat));
-    }
+  }, [messageListRef]);
+
+  useLayoutEffect(() => {
+    scrollDown();
+  })  
+
+  useEffect(() => {
+    
     if (isHubConnected && activeChat) {
+      dispatch(MessengerOperation.getMessages(activeChat as number));
       hubConnection.invoke('JoinGroup', activeChat.toString());
       hubConnection.on('send', (message, username) => {
         console.log(message, username);
       })
     }
   
-  }, [activeChat, isHubConnected, dispatch]);
+  }, [activeChat, isHubConnected, dispatch, scrollDown]);
 
   const renderMessagesArea = () => {
     if (!isMobileMessagesAreaOpen && !isDesktop) return null;
@@ -65,14 +77,18 @@ const Messages: React.FunctionComponent = () => {
               size="small"
             />}
           <img className="messages__avatar avatar avatar--small" src={defaultAvatar} alt="avatar"/>
-          <h3 className="messages__chatname">{chatMessages && chatMessages.chatName}</h3>
+          <h3 className="messages__chatname">{activeChat && chatEntity.byId[activeChat].name}</h3>
         </header>
         <ul ref={messageListRef} className="messages__list scroll">
-          {chatMessages && chatMessages.messages.map((message, index, arr ) => {
-            const previousSenderId = arr[index-1] &&  arr[index-1].user!.id;
-            const isPreviousSenderSame = previousSenderId ? message.user!.id === previousSenderId: false;
-            return (<li key={`message-${index}`} className={`messages__item ${message.isMine ? 'messages__item--mine' : 'messages__item--not-mine'}`}>
-              {!message.isMine && !isPreviousSenderSame && <ProfileLink user={message.user} />}
+          {activeChat && activeMessagesIds.map((messageId: number, index, arr ) => {
+            const message = messages[messageId];
+            const previousSenderId = arr[index - 1] && messages[arr[index - 1]].userId;
+            const isPreviousSenderSame = previousSenderId ? message.userId === previousSenderId: false;
+
+            const isMineMessage = user?.id === message.userId;
+            return (<li key={`message-${index}`} className={`messages__item ${isMineMessage ? 'messages__item--mine' : 'messages__item--not-mine'}`}>
+              {!isMineMessage && !isPreviousSenderSame && <ProfileLink  />}
+              {message.status === MessageStatus.SENDING  && <Spin />}
               <div className="messages__inner">
                 <span>{message.content}</span>
                 <span className="messages__datetime">{moment(message.dateTime).format('HH:MM')}</span>
@@ -81,7 +97,7 @@ const Messages: React.FunctionComponent = () => {
           })
           }
         </ul>
-        <TypingArea />
+        <TypingArea scrollDown={scrollDown} />
       </section>
     )
 

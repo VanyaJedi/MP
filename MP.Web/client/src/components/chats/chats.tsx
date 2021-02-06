@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { mediaQueries } from '../../constants';
 import defaultAvatar from '../../assets/images/default-avatar.png';
-import { Chat } from '../../types/interfaces';
 import { getChats, getUsersFetchingStatus } from '../../reducers/messenger/selectors';
 import { getMobileMessengerState } from '../../reducers/app/selectors';
 import { Operation as MessengerOperation } from '../../reducers/messenger/messenger';
@@ -18,7 +17,11 @@ import './chats.scss';
 const Chats: React.FunctionComponent = () => { 
 
   const dispatch: AppDispatch = useDispatch();
-  const chatsList = useSelector(getChats);
+
+  const chatEntity = useSelector(getChats);
+  const chatsIds = chatEntity.allIds;
+  const chats = chatEntity.byId;
+
   const isMobileMessagesAreaOpen = useSelector(getMobileMessengerState);
   const isFetching = useSelector(getUsersFetchingStatus);
 
@@ -38,22 +41,22 @@ const Chats: React.FunctionComponent = () => {
 
   return (
     <aside className="chats scroll"> 
-      {isDesktop && <h2 className="chats__title">Dialogues</h2>}
+      {isDesktop && <h2 className="chats__ti tle">Dialogues</h2>}
       <ul className="chats__list">
-        {chatsList.map((chatItem: Chat) => (
+        {chatsIds.map((chatItem) => (
           <li 
-            key={chatItem.id} 
+            key={chatItem} 
             className="chats__item"
             onClick={() => {
               !isDesktop && dispatch(ActionCreatorApp.changeMobileMessagesAreaState(true));
-              dispatch(ActionCreatorMessenger.setActiveChat(chatItem.id));
+              dispatch(ActionCreatorMessenger.setActiveChat(chatItem));
             }}
           >
             <img src={defaultAvatar} className="chats__avatar" alt="avatar" />
             <div className="chats__item-info">
-              <h4 className="chats__name">{chatItem.name}</h4>
-              <span className="chats__content" >{chatItem.lastMessageText}</span>
-              <span className="chats__datetime" >{moment(chatItem.lastMessageDateTime).format('HH:MM')}</span>
+              <h4 className="chats__name">{chats[chatItem].name}</h4>
+              <span className="chats__content" >{chats[chatItem].lastMessageText}</span>
+              <span className="chats__datetime" >{moment(chats[chatItem].lastMessageDateTime).format('HH:MM')}</span>
             </div>
           </li>
         ))}

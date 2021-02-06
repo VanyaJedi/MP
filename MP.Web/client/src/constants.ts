@@ -41,3 +41,9 @@ export const navigationItems = [
     route: Routes.MESSENGER
   },
 ]
+
+export enum MessageStatus {
+  SENDING = 'sending',
+  SUCCESS = 'success',
+  FAIL = 'fail'
+}

@@ -7,6 +7,9 @@ using MP.Application.Services.Messages.ChatManager;
 using MP.Data.Interfaces;
 using MP.Core.Domain;
 using System.Linq;
+using MP.Application.Models.Messages;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MP.Web.ChatHub
 {
@@ -21,13 +24,14 @@ namespace MP.Web.ChatHub
             _chatRoomRepositary = chatRoomRepositary;
         }
         [Authorize]
-        public async Task Send(string message, int chatRoomId)
+        public async Task<MessageItem> Send(string message, int chatRoomId)
         {
             string roomName = _chatRoomRepositary.Table.FirstOrDefault(cr => cr.Id == chatRoomId).ChatRoomName;
             string xConnectionId = Context.ConnectionId;
             string xLogin = Context.User.Identity.Name;
             await this.Clients.OthersInGroup(roomName).SendAsync("Send", message, xLogin);
-            _chatManager.AddMessageToPool(message, xLogin, chatRoomId);
+            var messageItem = _chatManager.AddMessageToPool(message, xLogin, chatRoomId);
+            return messageItem;
         }
 
         public async Task JoinGroup(string roomName)

@@ -1,19 +1,36 @@
 @import '../../variables.scss';
 
-.typing-area {
+.typing-area.ant-form {
   overflow: auto;
   min-height: 50px;
   flex-grow: 0;
   width: 97.86%;
   margin: 0 auto;
-  max-height: 250px;
+  min-height: 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   align-self: end;
   border-radius: 4px;
-  background-color: $type-area;
   padding-right: 5px;
+  overflow-y: hidden;
+
+
+  .typing-area__form-item {
+    width: 100%; 
+    margin: 0;
+    height: 100%;
+  }
+
+  .ant-form-item-control-input {
+    height: 100%;
+  }
+
+  .ant-btn-icon-only.ant-btn-lg {
+    width: 36px;
+    height: 36px;
+    margin-left: 10px;
+  }
 }
 
 .typing-area__text {

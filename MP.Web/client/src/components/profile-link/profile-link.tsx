@@ -7,7 +7,7 @@ import { User } from '../../types/interfaces';
 import './profile-link.scss';
 
 interface Props {
-  user: User | null | undefined;
+  user?: User | null | undefined;
   styleName?: string;
 }
 

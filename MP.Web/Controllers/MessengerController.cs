@@ -48,7 +48,7 @@ namespace MP.Web.Controllers
         {
             try
             {
-                var messages = _chatManager.RecieveMessages(User.Identity.Name, chatRoomQuery.ChatRoomId);
+                var messages = _chatManager.RecieveMessages(chatRoomQuery.ChatRoomId);
                 var response = JsonConvert.SerializeObject(messages);
                 return Ok(response);
             }

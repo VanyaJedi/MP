@@ -8,6 +8,7 @@ namespace MP.Application.Models.Messages
     {
         public int MessageId;
         public string ChatRoomName;
+        public int ChatRoomId;
         public string MessageText;
         public string UserId;
         public string UserName;

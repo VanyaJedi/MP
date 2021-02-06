@@ -1,7 +1,7 @@
 import { extend } from '../../utils/common';
-import { Action, User, AuthData, regData } from '../../types/interfaces';
+import { User, AuthData, regData } from '../../types/interfaces';
 import { AxiosInstance } from 'axios';
-import { Dispatch } from 'redux';
+import { AnyAction, Dispatch, Reducer } from 'redux';
 import { createUser } from '../../adapters/user'; 
 import { ActionCreator as ActionCreatorApp } from '../app/app';
 
@@ -28,15 +28,16 @@ const ActionCreator = {
 };
 
 const Operation = {
-  checkAuth: () => (dispatch: Dispatch, getState: () => State, api: AxiosInstance) => {
+  checkAuth: () => (dispatch: Dispatch, getState: () => State, api: AxiosInstance): Promise<User | null> => {
     dispatch(ActionCreatorApp.setInitialFetchingStatus(true));
     return api.get(`/user/getuser`)
       .then((res) => {
         const user: User | null = createUser(res.data);
         dispatch(ActionCreator.setUser(user));
+        return user;
       })
-      .catch((err) => {
-        throw err;
+      .catch(() => {
+        return null;
       })
       .finally(() => {
         dispatch(ActionCreatorApp.setInitialFetchingStatus(false));
@@ -117,7 +118,7 @@ const Operation = {
   }
 };
 
-const reducer = (state = initialState, action: Action<unknown>) => {
+const reducer: Reducer<State, AnyAction> = (state = initialState, action: AnyAction) => {
   switch (action.type) {
   case ActionType.SET_USER:
     return extend(state, {user: action.payload});

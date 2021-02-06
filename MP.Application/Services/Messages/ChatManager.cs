@@ -78,40 +78,37 @@ namespace MP.Application.Services.Messages.ChatManager
         }
 
         // Получить сообщения из БД для AChatRoom. AMyLogin нужен для формирования признака IsFriend.
-        public  List<MessageItem> RecieveMessages(string userName, int chatRoomId)
+        public  List<MessageItem> RecieveMessages(int chatRoomId)
         {
-            string chatRoomName = this._chatRoomRepositary.Table.FirstOrDefault(cr => cr.Id == chatRoomId).ChatRoomName;
             List<MessageItem> result = new List<MessageItem>();
-            try
-            {
-                var xMessages = this._messagesRepository.Table.OrderBy(p => p.MessageId);
-                List<Message> messageList = (from message in xMessages
-                                          where message.ChatRoomId == chatRoomId
-                                             select message).ToList();
-                if (messageList != null)
-                {
-                    int messageCountToShow = (messageList.Count > 5) ? messageList.Count - 5 : 0;
-       
-                    for (int i = messageCountToShow; i < messageList.Count; i++)
-                    {
-                        var currentUserName = _usersRepository.Table.FirstOrDefault(u => u.Id == messageList[i].UserId).UserName;
-                        MessageItem xMessageItem = new MessageItem();
-                        xMessageItem.MessageId = messageList[i].MessageId;
-                        xMessageItem.ChatRoomName = chatRoomName;
-                        xMessageItem.MessageText = messageList[i].MessageText;
-                        xMessageItem.UserId = messageList[i].UserId;
-                        xMessageItem.UserName = currentUserName;
-                        xMessageItem.DateTime = messageList[i].SendTime; 
-                        result.Add(xMessageItem);
-                    }
-                }
 
-                return result;
-            }
-            catch
+            var messagesTable = this._messagesRepository.Table.OrderBy(p => p.MessageId);
+
+            List<Message> messageList = messagesTable
+                .Include(m => m.ChatRoom)
+                .Include(m => m.User)
+                .Where(m => m.ChatRoomId == chatRoomId)
+                .ToList();
+
+
+            if (messageList != null)
             {
-                return result;
+                int messageCountToShow = (messageList.Count > 25) ? messageList.Count - 25 : 0;
+       
+                for (int i = messageCountToShow; i < messageList.Count; i++)
+                {
+                    MessageItem xMessageItem = new MessageItem();
+                    xMessageItem.MessageId = messageList[i].MessageId;
+                    xMessageItem.ChatRoomName = messageList[i].ChatRoom.ChatRoomName;
+                    xMessageItem.MessageText = messageList[i].MessageText;
+                    xMessageItem.UserId = messageList[i].UserId;
+                    xMessageItem.UserName = messageList[i].User.UserName;
+                    xMessageItem.DateTime = messageList[i].SendTime; 
+                    result.Add(xMessageItem);
+                }
             }
+
+            return result;
         }
 
         // Получить последнее сообщение для AChatRoom. 
@@ -181,19 +178,29 @@ namespace MP.Application.Services.Messages.ChatManager
         }
 
         // Сохранить сообщение в БД
-        public bool AddMessageToPool(string message, string userName, int chatRoomId)
+        public MessageItem AddMessageToPool(string message, string userName, int chatRoomId)
         {
-            Message messageItem = new Message();
+            Message messageTable = new Message();
 
             var userId = this._usersRepository.Table.FirstOrDefault(u => u.UserName == userName).Id;
 
-            messageItem.MessageText = message;
-            messageItem.UserId = userId;
-            messageItem.ChatRoomId = chatRoomId;
-            messageItem.SendTime = DateTime.Now;
-            FDB.Messages.Add(messageItem);
+            messageTable.MessageText = message;
+            messageTable.UserId = userId;
+            messageTable.ChatRoomId = chatRoomId;
+            messageTable.SendTime = DateTime.Now;
+            var x = FDB.Messages.Add(messageTable);
             FDB.SaveChanges();
-            return true;
+
+            int id = messageTable.MessageId;
+            MessageItem messageItem = new MessageItem()
+            {
+                MessageId = id,
+                ChatRoomId = chatRoomId,
+                UserId = userId,
+                MessageText = message
+            };
+
+            return messageItem;
         }
 
         // Текущая информация при загрузке страницы

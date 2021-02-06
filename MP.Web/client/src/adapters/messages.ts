@@ -1,46 +1,58 @@
-import { Message, ChatMessages } from "../types/interfaces";
+import { Message, ReduxEntity, User, ActiveChat } from "../types/interfaces";
+import { MessageDto } from '../types/dto';
 
-export const createChatMessages = (chatId: number, data: any): ChatMessages | null => {
-  if (!data) {
-    return null;
-  }
-  let chatName;
-  if (data.length) {
-    chatName = data[0].ChatRoomName;
-  }
-
-  const messages: Message[] = data.map((item: any) => ({
-    user: {
-      id: item.UserId,
-      name: item.UserName
-    },
-    content: item.MessageText,
-    dateTime: item.DateTime
-
-  }));
-
-  return {
-    chatId,
-    chatName,
-    messages
-  };
-};
-
-
-export const CreateContactsFromMessages = (data: any): any => {
-  if (!data) {
-    return null;
-  }
-
+export const createMessages = (chatId: number, data: MessageDto[]): ReduxEntity<Message> => {
   const result = {
-    byId: {},
-    allIds: [] as string
+    byId: {} as {[key: number]: Message},
+    allIds: [] as unknown as number[]
   };
+  if (!data) {
+    return result;
+  }
+
+  for(let i = 0; i < data.length; i++){
+    if(result.allIds.includes(data[i].MessageId)) {
+      continue;
+    }
+
+    result.byId[data[i].MessageId] = {
+      messageId: data[i].MessageId,
+      userId: data[i].UserId,
+      chatId: chatId,
+      content: data[i].MessageText,
+      dateTime: data[i].DateTime
+    }
+
+    result.allIds.push(data[i].MessageId); 
+  }
+
+  
+
+  return result;
+
+}
+
+export const createUsersFromMessages = (data: MessageDto[]): ReduxEntity<User> => {
+  const result = {
+    byId: {} as {[key: string]: User},
+    allIds: [] as unknown as string[]
+  };
+
+  if (!data) {
+    return result;
+  }
 
   for(let i = 0; i < data.length; i++){
     if(result.allIds.includes(data[i].UserId)) {
       continue;
     }
 
+    result.byId[data[i].UserId] = {
+      id: data[i].UserId,
+      name: data[i].UserName,
+    }
+    result.allIds.push(data[i].UserId);
   }
+
+  return result;
 }

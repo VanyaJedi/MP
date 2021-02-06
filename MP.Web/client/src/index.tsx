@@ -5,29 +5,24 @@ import { Provider } from 'react-redux';
 import { ActionCreator as ActionCreatorApp } from './reducers/app/app';
 import { Operation as UserOperation } from './reducers/user/user';
 import store from "./reducers/store";
-import hubConnection from './signalR';
+import { User } from './types/interfaces';
+import  { start } from './signalR';
 
 import './global.scss';
 import './app.less';
 
-store.dispatch(UserOperation.checkAuth());
-
-
-async function start() {
-  try {
-      await hubConnection.start();
-      console.log("SignalR Connected.");
-      store.dispatch(ActionCreatorApp.setHubConnectionState(true));
-  } catch (err) {
-      console.log(err);
-      store.dispatch(ActionCreatorApp.setHubConnectionState(false));
-      setTimeout(start, 5000);
-  }
-};
-
-hubConnection.onclose(start);
-
-start();
+store.dispatch(UserOperation.checkAuth())
+  .then((user: User | null) => {
+    if (user) {
+      return start();
+    }
+  })
+  .then(() => {
+    store.dispatch(ActionCreatorApp.setHubConnectionState(true));
+  })
+  .catch(()=>{
+    store.dispatch(ActionCreatorApp.setHubConnectionState(false));
+  })
 
 
 ReactDOM.render(

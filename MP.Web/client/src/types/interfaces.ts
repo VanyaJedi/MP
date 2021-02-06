@@ -11,10 +11,12 @@ export interface User {
 }
 
 export interface Message {
-  user: User | null,
+  messageId: number,
+  userId: string,
+  chatId: number,
   content: string,
   dateTime: Date,
-  isMine?: boolean
+  status?: string
 }
 
 export interface Chat {
@@ -30,25 +32,6 @@ export interface ChatMessages {
   messages: Message[],
 }
 
-export type ActiveChat = number | null;
-
-export interface State {
-  'APP': {
-    isProfileMenuOpen: boolean,
-    isMobileMessagesAreaOpen: boolean
-  },
-
-  'USER': {
-    user: User | null;
-  },
-
-  'MESSENGER': {
-    chats: Chat[],
-    messages: ChatMessages[],
-    activeChatId: ActiveChat
-  }
-}
-
 export interface AuthData {
   email: string,
   username?: string,
@@ -62,11 +45,17 @@ export interface regData {
   password: string
 }
 
-type id = string | number;
+
+export type EnitytIdType = string | number
+
+export type ActiveChat = EnitytIdType | null;
+
 export interface ReduxEntity<T> {
-  contactsById: {
-    [key in id]: T
+  byId: {
+    [id in EnitytIdType]: T
   },
-  allIds: id[]
+  allIds: EnitytIdType[]
 }
+
+
 

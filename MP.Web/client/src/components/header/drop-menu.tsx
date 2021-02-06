@@ -6,6 +6,7 @@ import { ActionCreator as ActionCreatorApp } from '../../reducers/app/app';
 import { AppDispatch } from '../../reducers/store';
 import { Operation as UserOperation } from '../../reducers/user/user';
 import { LogoutOutlined } from '@ant-design/icons';
+import { stop } from '../../signalR';
 import './styles/drop-menu.scss';
 
 const DropMenu: React.FunctionComponent = ({ children }) => {
@@ -32,6 +33,10 @@ const DropMenu: React.FunctionComponent = ({ children }) => {
           .then((isSuccess: boolean)=>{
             if (isSuccess)
             dispatch(ActionCreatorApp.toggleProfileMenu(false));
+            return stop();
+          })
+          .then(()=>{
+            dispatch(ActionCreatorApp.setHubConnectionState(false));
           })
         }}>
         <button type="submit">
