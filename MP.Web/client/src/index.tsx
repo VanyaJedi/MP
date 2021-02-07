@@ -6,7 +6,7 @@ import { ActionCreator as ActionCreatorApp } from './reducers/app/app';
 import { Operation as UserOperation } from './reducers/user/user';
 import store from "./reducers/store";
 import { User } from './types/interfaces';
-import  { start } from './signalR';
+import  hubConnection, { start }  from './signalR';
 
 import './global.scss';
 import './app.less';
@@ -19,6 +19,9 @@ store.dispatch(UserOperation.checkAuth())
   })
   .then(() => {
     store.dispatch(ActionCreatorApp.setHubConnectionState(true));
+    hubConnection.on('Send', (message, username) => {
+      console.log(message, username);
+    });
   })
   .catch(()=>{
     store.dispatch(ActionCreatorApp.setHubConnectionState(false));

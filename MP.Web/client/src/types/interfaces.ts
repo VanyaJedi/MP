@@ -11,12 +11,13 @@ export interface User {
 }
 
 export interface Message {
-  messageId: number,
+  messageId?: number,
   userId: string,
   chatId: number,
   content: string,
-  dateTime: Date,
-  status?: string
+  dateTime?: Date,
+  status?: string,
+  tempId?: number
 }
 
 export interface Chat {

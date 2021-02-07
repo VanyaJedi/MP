@@ -4,7 +4,7 @@ import { AxiosInstance } from 'axios';
 import { AnyAction, Dispatch, Reducer } from 'redux';
 import { createUser } from '../../adapters/user'; 
 import { ActionCreator as ActionCreatorApp } from '../app/app';
-
+import { RootState } from '../reducer';
 
 interface State {
   user: User | null;
@@ -28,7 +28,7 @@ const ActionCreator = {
 };
 
 const Operation = {
-  checkAuth: () => (dispatch: Dispatch, getState: () => State, api: AxiosInstance): Promise<User | null> => {
+  checkAuth: () => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance): Promise<User | null> => {
     dispatch(ActionCreatorApp.setInitialFetchingStatus(true));
     return api.get(`/user/getuser`)
       .then((res) => {
@@ -44,7 +44,7 @@ const Operation = {
       });
   },
 
-  registration: (regData: regData) => (dispatch: Dispatch, getState: () => State, api: AxiosInstance) => {
+  registration: (regData: regData) => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
 
     dispatch(ActionCreatorApp.setFetchingStatus(true));
 
@@ -64,7 +64,8 @@ const Operation = {
     })
   },
 
-  login: (authData: AuthData) => (dispatch: Dispatch, getState: () => State, api: AxiosInstance) => {
+  login: (authData: AuthData) => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
+
     dispatch(ActionCreatorApp.setFetchingStatus(true));
     return api.post(`/user/login`, {
       Email: authData.email,
@@ -77,7 +78,7 @@ const Operation = {
         return true;
       })
       .catch((error) => {
-        console.log(JSON.stringify(error))
+        console.log(error.message);
         dispatch(ActionCreatorApp.setMessageError('error'));
         return false;
       })
@@ -86,7 +87,7 @@ const Operation = {
       })
   },
 
-  resetPassword: (authData: AuthData) => (dispatch: Dispatch, getState: () => State, api: AxiosInstance) => {
+  resetPassword: (authData: AuthData) => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
     dispatch(ActionCreatorApp.setFetchingStatus(true));
     return api.post(`/user/forgotpassword`, {
       Email: authData.email,
@@ -105,7 +106,7 @@ const Operation = {
     })
   },
 
-  logOut: () => (dispatch: Dispatch, getState: () => State, api: AxiosInstance) => {
+  logOut: () => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
     return api.get('user/logout')
       .then(()=>{
         dispatch(ActionCreator.setUser(null));

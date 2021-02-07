@@ -116,9 +116,9 @@ namespace MP.Web.Controllers
                 var response = JsonSerializer.Serialize(userModel.Result);
                 return Ok(response);
             }
-            catch (RestException ex)
+            catch (Exception ex)
             {
-                return BadRequest(ex.Errors);
+                return BadRequest(ex.InnerException.Message);
             }
         }
 

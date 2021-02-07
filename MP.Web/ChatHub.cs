@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MP.Web.ChatHub
 {
+    [Authorize]
     public class ChatHub : Hub
     {
         private static Hashtable _ChatRommConnectionId = new Hashtable();
@@ -23,15 +24,15 @@ namespace MP.Web.ChatHub
             _chatManager = chatManager;
             _chatRoomRepositary = chatRoomRepositary;
         }
-        [Authorize]
-        public async Task<MessageItem> Send(string message, int chatRoomId)
+        
+        public async Task<string> Send(string message, int chatRoomId)
         {
             string roomName = _chatRoomRepositary.Table.FirstOrDefault(cr => cr.Id == chatRoomId).ChatRoomName;
             string xConnectionId = Context.ConnectionId;
             string xLogin = Context.User.Identity.Name;
             await this.Clients.OthersInGroup(roomName).SendAsync("Send", message, xLogin);
             var messageItem = _chatManager.AddMessageToPool(message, xLogin, chatRoomId);
-            return messageItem;
+            return JsonConvert.SerializeObject(messageItem);
         }
 
         public async Task JoinGroup(string roomName)

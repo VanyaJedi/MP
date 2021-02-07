@@ -1,4 +1,4 @@
-import React, { FormEvent, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux'
 import { Button, Input, Form } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
@@ -6,8 +6,14 @@ import hubConnection from '../../signalR';
 import { getActiveChatId } from '../../reducers/messenger/selectors';
 import { getUser } from '../../reducers/user/selectors';
 import { ActionCreator as ActionCreatorMessenger } from '../../reducers/messenger/messenger';
+import { MessageStatus } from '../../constants'; 
 import { useSelector } from 'react-redux'
+import { Message } from '../../types/interfaces';
+import { uniqueId } from '../../utils/common';
+
 import './typing-area.scss';
+import { MessageDto } from '../../types/dto';
+
 
 
 const { TextArea } = Input;
@@ -28,21 +34,42 @@ const TypingArea: React.FunctionComponent<Props>  = ({ scrollDown }: Props) => {
 
   const onSubmitHandler = (values: any) => {
     const messageText = values.message;
-    console.log(messageText);
-
+    const tempId = uniqueId();
     if (messageText && activeChat && user) {
-      dispatch(ActionCreatorMessenger.addMessage(messageText, activeChat, user.id));
+
+      const message: Message = {
+        tempId,
+        userId: user.id,
+        chatId: activeChat as number,
+        content: messageText,
+        status: MessageStatus.SENDING
+      }
+
+      dispatch(ActionCreatorMessenger.addMessage(message));
+      scrollDown();
 
       hubConnection.invoke('Send', messageText, activeChat)
-      .then((res) => {
-        scrollDown();
-        console.log(res);
-      })
+        .then((res) => {
+          const messageItem: MessageDto = JSON.parse(res);
+          const parsedMessage = {
+            messageId: messageItem.MessageId,
+            userId: messageItem.UserId,
+            chatId: messageItem.ChatRoomId,
+            content: messageItem.MessageText,
+            dateTime: messageItem.DateTime,
+            status: MessageStatus.SUCCESS,
+          }
+          dispatch(ActionCreatorMessenger.modifyMessage(tempId, parsedMessage));
+        })
+        .catch((err) => {
+          message.status = MessageStatus.FAIL;
+          dispatch(ActionCreatorMessenger.modifyMessage(tempId, message));
+        })
     }
   }
 
   return (
-    <Form 
+    <Form
       form={form}
       onFinish={onSubmitHandler} 
       className="typing-area scroll"

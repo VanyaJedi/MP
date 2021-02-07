@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useCallback, useLayoutEffect } from 'react';
 import { Button, Spin } from 'antd';
-import { LeftOutlined } from '@ant-design/icons';
+import { LeftOutlined, CheckOutlined, WarningOutlined, LoadingOutlined  } from '@ant-design/icons';
 import { useSelector, useDispatch } from 'react-redux'
 import { getActiveChatId, getActiveChatMessages, getMessagesFetchingStatus, getChats, getMessages } from '../../reducers/messenger/selectors';
 import { getUser } from '../../reducers/user/selectors';
@@ -32,6 +32,7 @@ const Messages: React.FunctionComponent = () => {
   const isMobileMessagesAreaOpen = useSelector(getMobileMessengerState);
   const isHubConnected = useSelector(getHubConnectionState);
   const isFetching = useSelector(getMessagesFetchingStatus);
+
   const isDesktop = useMediaQuery(mediaQueries.desktop);
 
   const messages = messageEntity.byId;
@@ -49,11 +50,9 @@ const Messages: React.FunctionComponent = () => {
   useEffect(() => {
     
     if (isHubConnected && activeChat) {
+
       dispatch(MessengerOperation.getMessages(activeChat as number));
       hubConnection.invoke('JoinGroup', activeChat.toString());
-      hubConnection.on('send', (message, username) => {
-        console.log(message, username);
-      })
     }
   
   }, [activeChat, isHubConnected, dispatch, scrollDown]);
@@ -88,10 +87,14 @@ const Messages: React.FunctionComponent = () => {
             const isMineMessage = user?.id === message.userId;
             return (<li key={`message-${index}`} className={`messages__item ${isMineMessage ? 'messages__item--mine' : 'messages__item--not-mine'}`}>
               {!isMineMessage && !isPreviousSenderSame && <ProfileLink  />}
-              {message.status === MessageStatus.SENDING  && <Spin />}
               <div className="messages__inner">
                 <span>{message.content}</span>
                 <span className="messages__datetime">{moment(message.dateTime).format('HH:MM')}</span>
+                {isMineMessage && <div className="messages__status">
+                  {message.status === MessageStatus.SENDING  && <Spin indicator={<LoadingOutlined spin />} />}
+                  {message.status === MessageStatus.SUCCESS && <CheckOutlined />}
+                  {message.status === MessageStatus.FAIL && <WarningOutlined />}
+                </div>}
               </div>
             </li>)
           })

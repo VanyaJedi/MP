@@ -1,4 +1,4 @@
-import { SettingOutlined, LogoutOutlined, MessageFilled, HomeFilled } from '@ant-design/icons';
+import { SettingOutlined, MessageFilled, HomeFilled } from '@ant-design/icons';
 
 export const mediaQueries = {
   mobile: '(max-width: 767px)',
@@ -6,19 +6,12 @@ export const mediaQueries = {
   desktop: '(min-width: 1440px)'
 };
 
-export const LOG_OUT = 'Log out';
-
 export const dropMenuItems = [
   {   
     id: 1,
     name: 'Settings', 
     icon: SettingOutlined
-  }/*,
-  {
-    id: 2,
-    name: LOG_OUT, 
-    icon: LogoutOutlined,
-  }*/
+  }
 ];
 
 export enum Routes {
