@@ -29,7 +29,8 @@ namespace MP.Web.ChatHub
             string roomName = _chatRoomRepositary.Table.FirstOrDefault(cr => cr.Id == chatRoomId).ChatRoomName;
             string xConnectionId = Context.ConnectionId;
             string xLogin = Context.User.Identity.Name;
-            await this.Clients.OthersInGroup(roomName).SendAsync("Send", message, xLogin);
+            //   await this.Clients.OthersInGroup(roomName).SendAsync("Send", message, xLogin);
+            await this.Clients.Group(roomName).SendAsync("Send", message, xLogin);
             var messageItem = _chatManager.AddMessageToPool(message, xLogin, chatRoomId);
             return messageItem;
         }
