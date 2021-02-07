@@ -29,14 +29,14 @@ const Auth = () => {
     dispatch(UserOperation.login(values))
     .then((isSuccess: boolean)=>{
       if(isSuccess) {
-        history.push(Routes.ROOT);  
+        history.push(Routes.ROOT);
+        return start()  
       }
-      return start()
     })
     .then(() => {
       dispatch(ActionCreatorApp.setHubConnectionState(true))
     })
-  }, []);
+  }, [dispatch, history]);
 
   const onRegisterSubmit = useCallback((values: any) => {
     const regData = {
@@ -48,7 +48,7 @@ const Auth = () => {
     .then(()=>{
       setFormType('login');
     });
-  }, []);
+  }, [dispatch]);
 
 
   const onResetSubmit = useCallback((values: any) => {
@@ -61,7 +61,7 @@ const Auth = () => {
     .then(()=>{
       setFormType('login');
     });
-  }, []);
+  }, [dispatch]);
 
   const renderForm = () => {
     switch(formType) {

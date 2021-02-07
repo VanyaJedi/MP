@@ -3,7 +3,7 @@
 
 .chats {
   width: 100%;
-  height: calc(100vh - 45px);
+  //height: calc(100vh - 45px);
   padding-top: 10px;
   overflow: auto;
 }
@@ -65,7 +65,7 @@
 @media (min-width: $tablet-width) {
 
   .chats {
-    height: calc(100vh - 50px);
+    //height: calc(100vh - 50px);
   }
 
   .chats__item {

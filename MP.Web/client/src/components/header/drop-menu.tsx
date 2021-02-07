@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useOutsideClick } from '../../hooks/useOutsideClick';
-import { dropMenuItems, LOG_OUT } from '../../constants';
+import { dropMenuItems } from '../../constants';
 import { ActionCreator as ActionCreatorApp } from '../../reducers/app/app';
 import { AppDispatch } from '../../reducers/store';
 import { Operation as UserOperation } from '../../reducers/user/user';

@@ -1,5 +1,6 @@
 export interface MessageDto {
   MessageId: number,
+  ChatRoomId: number,
   ChatRoomName: string,
   MessageText: string,
   UserId: string,

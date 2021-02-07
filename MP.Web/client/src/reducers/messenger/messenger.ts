@@ -5,7 +5,6 @@ import { AxiosInstance } from 'axios';
 import { createChats } from '../../adapters/chats';
 import { createMessages, createUsersFromMessages } from '../../adapters/messages';
 import { RootState } from '../reducer';
-import { MessageStatus } from '../../constants';
 
 
 interface State {
@@ -45,7 +44,8 @@ const ActionType = {
   SET_MESSAGES: `SET_MESSAGES`,
   SET_USERS: `SET_USERS`,
   SET_ACTIVE_CHAT: 'SET_ACTIVE_CHAT_USER',
-  ADD_MESSAGE: 'ADD_MESSAGE'
+  ADD_MESSAGE: 'ADD_MESSAGE',
+  MODIFY_MESSAGE: 'MODIFY_MESSAGE'
 };
 
 
@@ -77,7 +77,6 @@ const Operation = {
     }).then((res) => {
       const data = res.data;
       const messages = createMessages(chatRoomId, data);
-      console.log(messages);
       const users = createUsersFromMessages(data);
 
       dispatch(ActionCreator.setUsers(users));
@@ -115,16 +114,22 @@ const ActionCreator = {
     payload: users
   }),
 
-  addMessage: (message: string, chatRoomId: EnitytIdType, userId: string) => ({
+  addMessage: (message: Message) => ({
     type: ActionType.ADD_MESSAGE,
+    payload: message
+  }),
+
+  modifyMessage: (id: number, message: Message) => ({
+    type: ActionType.MODIFY_MESSAGE,
     payload: {
-      chatRoomId,
-      message,
-      userId
+      id,
+      message
     }
   }),
 
+
 };
+
 
 const addMessage = (state: State, action: AnyAction) => {
   const allIds =  state.messages.allIds.slice();
@@ -132,18 +137,11 @@ const addMessage = (state: State, action: AnyAction) => {
     [id in EnitytIdType]: Message
   };
 
-  const id = allIds.length ? +allIds[allIds.length - 1] + 1: 1;
-  const message = {
-    messageId: id,
-    userId: action.payload.userId,
-    chatId:  action.payload.chatRoomId,
-    content: action.payload.message,
-    dateTime: new Date(),
-    status: MessageStatus.SENDING
-   }
+  const message = action.payload;
+  const messageId = message.messageId ? message.messageId : message.tempId;
 
-  byId[id] = message;
-  allIds.push(id);
+  byId[messageId] = message;
+  allIds.push(messageId);
 
   const newState = extend(state, {
     messages: {
@@ -154,6 +152,35 @@ const addMessage = (state: State, action: AnyAction) => {
 
   return newState;
 }
+
+const modifyMessage = (state: State, action: AnyAction) => {
+  const allIds =  state.messages.allIds.slice();
+  const byId = extend({}, state.messages.byId) as {
+    [id in EnitytIdType]: Message
+  };
+
+  const { id, message } = action.payload;
+  const messageId = message.messageId ? message.messageId : message.tempId;
+
+  if (allIds.includes(id)) {
+    const index = allIds.indexOf(id);
+    allIds[index] = messageId;
+
+    delete byId[action.payload.id];
+    byId[messageId] = message;
+  }
+
+  const newState = extend(state, {
+    messages: {
+      allIds,
+      byId
+    }  
+  }) as State;
+
+  return newState;
+
+}
+
 
 const reducer: Reducer<State, AnyAction> = (state = initialState, action: AnyAction) => {
   switch (action.type) {
@@ -170,7 +197,9 @@ const reducer: Reducer<State, AnyAction> = (state = initialState, action: AnyAct
   case ActionType.SET_MESSAGES:
     return extend(state, {messages: action.payload}); 
   case ActionType.ADD_MESSAGE:
-    return addMessage(state, action); 
+    return addMessage(state, action);
+  case ActionType.MODIFY_MESSAGE:
+    return modifyMessage(state, action); 
   default:
     return state;
   }

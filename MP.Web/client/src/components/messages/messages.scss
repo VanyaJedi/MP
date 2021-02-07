@@ -55,6 +55,7 @@
   line-height: 14px;
   word-break: break-all;
   padding: 12px;
+  padding-right: 25px;
   border-radius: 30px 20px 30px 20px;
   margin-left: 40px;
 }
@@ -93,7 +94,12 @@
       right: -27px;
     }
   }
-  
+}
+
+.messages__status {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 
 

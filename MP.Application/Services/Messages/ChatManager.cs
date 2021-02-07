@@ -197,7 +197,8 @@ namespace MP.Application.Services.Messages.ChatManager
                 MessageId = id,
                 ChatRoomId = chatRoomId,
                 UserId = userId,
-                MessageText = message
+                MessageText = message,
+                DateTime = DateTime.Now
             };
 
             return messageItem;

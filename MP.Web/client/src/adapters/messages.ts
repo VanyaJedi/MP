@@ -1,5 +1,6 @@
-import { Message, ReduxEntity, User, ActiveChat } from "../types/interfaces";
+import { Message, ReduxEntity, User } from "../types/interfaces";
 import { MessageDto } from '../types/dto';
+import { MessageStatus } from "../constants";
 
 export const createMessages = (chatId: number, data: MessageDto[]): ReduxEntity<Message> => {
   const result = {
@@ -20,7 +21,8 @@ export const createMessages = (chatId: number, data: MessageDto[]): ReduxEntity<
       userId: data[i].UserId,
       chatId: chatId,
       content: data[i].MessageText,
-      dateTime: data[i].DateTime
+      dateTime: data[i].DateTime,
+      status: MessageStatus.SUCCESS
     }
 
     result.allIds.push(data[i].MessageId); 

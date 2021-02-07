@@ -31,7 +31,7 @@ const Chats: React.FunctionComponent = () => {
 
   useEffect(() => {
     dispatch(MessengerOperation.getChats());
-  }, [])
+  }, [dispatch])
 
   if ((isMobile || isTablet) && isMobileMessagesAreaOpen) return null;
 
