@@ -9,8 +9,17 @@ export interface MessageDto {
 }
 
 export interface ChatDto {
-  UserName: string,
+  ChatRoomName: string,
+  IsGroup: boolean,
+  Users: UserDto[],
   LastMessage:string,
   LastDateTime: Date,
   ChatRoomId: number
 } 
+
+export interface UserDto {
+  Id: string,
+  Email: string,
+  UserName: string,
+  Image: string
+}

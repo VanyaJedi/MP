@@ -27,20 +27,21 @@ namespace MP.Web.ChatHub
         
         public async Task<string> Send(string message, int chatRoomId)
         {
-            string roomName = _chatRoomRepositary.Table.FirstOrDefault(cr => cr.Id == chatRoomId).ChatRoomName;
+            string chatRoom = Convert.ToString(chatRoomId);
             string xConnectionId = Context.ConnectionId;
             string xLogin = Context.User.Identity.Name;
-            await this.Clients.OthersInGroup(roomName).SendAsync("Send", message, xLogin);
             var messageItem = _chatManager.AddMessageToPool(message, xLogin, chatRoomId);
-            return JsonConvert.SerializeObject(messageItem);
+            var response = JsonConvert.SerializeObject(messageItem);
+            await this.Clients.OthersInGroup(chatRoom).SendAsync("Send", response);
+            return response;
         }
 
-        public async Task JoinGroup(string roomName)
+        public async Task JoinGroup(string chatRoomId)
         {
             if (_ChatRommConnectionId.ContainsKey(Context.ConnectionId))
                 _ChatRommConnectionId.Remove(Context.ConnectionId);
-            _ChatRommConnectionId.Add(Context.ConnectionId, roomName);
-            await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
+            _ChatRommConnectionId.Add(Context.ConnectionId, chatRoomId);
+            await Groups.AddToGroupAsync(Context.ConnectionId, chatRoomId);
         }
 
         public override async Task OnConnectedAsync()

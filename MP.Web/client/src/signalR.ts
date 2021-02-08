@@ -3,6 +3,7 @@ import axios from "axios";
 
 
 const hubConnection = new signalR.HubConnectionBuilder()
+  .configureLogging(signalR.LogLevel.None)
   .withUrl("/chat", {
     accessTokenFactory: async () => {
       const tokenResponse = await axios.get('/user/jwt/');

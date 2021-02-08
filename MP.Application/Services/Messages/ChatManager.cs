@@ -9,10 +9,10 @@ using System.IO;
 using Microsoft.EntityFrameworkCore;
 using MP.Application.Models.Messages;
 using MP.Data.Interfaces;
+using MP.Application.Models.UserModels;
 
 namespace MP.Application.Services.Messages.ChatManager
 {
-    // Менеджер чата сообщений
     public class ChatManager: IChatManager
     {
         private DataContext FDB;
@@ -32,7 +32,6 @@ namespace MP.Application.Services.Messages.ChatManager
             _chatRoomRepositary = chatRoomRepositary;
         }
 
-        // Построить список контактов
         public  List<ContactItem> BuildContactList(string userName)
         {
             List<ContactItem> сontactList = new List<ContactItem>();
@@ -47,7 +46,6 @@ namespace MP.Application.Services.Messages.ChatManager
 
             var chatRooms = user.ChatRoomUser.Select(sc => sc.ChatRoom).ToList();
 
-            // Формировать список контактов
             foreach (ChatRoom cru in chatRooms)
             {
                 if (cru.UserNumber <= 2)
@@ -56,7 +54,14 @@ namespace MP.Application.Services.Messages.ChatManager
                         if (x.User.UserName != userName)
                         {
                             ContactItem contactItem = new ContactItem();
-                            contactItem.UserName = x.User.UserName;
+                            contactItem.ChatRoomName = x.User.UserName;
+                            contactItem.Users = cru.ChatRoomUser
+                                .Where(cr => cr.User.UserName != userName)
+                                .Select(cr => new UserDto() { 
+                                    Id = cr.User.Id,
+                                    UserName = cr.User.UserName,
+                                });
+                            contactItem.IsGroup = false;
                             contactItem.LastMessage = GetLatest(cru.Id, out contactItem.LastDateTime);
                             contactItem.ChatRoomId = cru.Id;
                             contactItem.Photo = x.User.Photo;
@@ -67,7 +72,14 @@ namespace MP.Application.Services.Messages.ChatManager
                 else
                 {
                     ContactItem contactItem = new ContactItem();
-                    contactItem.UserName = cru.ChatRoomName;
+                    contactItem.ChatRoomName = cru.ChatRoomName;
+                    contactItem.Users = cru.ChatRoomUser
+                        .Select(cr => new UserDto()
+                            {
+                                Id = cr.User.Id,
+                                UserName = cr.User.UserName,
+                            });
+                    contactItem.IsGroup = true;
                     contactItem.LastMessage = "";
                     contactItem.Photo = null;
                     сontactList.Add(contactItem);
@@ -77,7 +89,7 @@ namespace MP.Application.Services.Messages.ChatManager
             return сontactList;
         }
 
-        // Получить сообщения из БД для AChatRoom. AMyLogin нужен для формирования признака IsFriend.
+
         public  List<MessageItem> RecieveMessages(int chatRoomId)
         {
             List<MessageItem> result = new List<MessageItem>();

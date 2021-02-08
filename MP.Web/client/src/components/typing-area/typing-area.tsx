@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useLayoutEffect } from 'react';
 import { useDispatch } from 'react-redux'
 import { Button, Input, Form } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
@@ -10,10 +10,9 @@ import { MessageStatus } from '../../constants';
 import { useSelector } from 'react-redux'
 import { Message } from '../../types/interfaces';
 import { uniqueId } from '../../utils/common';
-
-import './typing-area.scss';
 import { MessageDto } from '../../types/dto';
 
+import './typing-area.scss';
 
 
 const { TextArea } = Input;
@@ -25,12 +24,20 @@ interface Props {
 const TypingArea: React.FunctionComponent<Props>  = ({ scrollDown }: Props) => { 
 
   const dispatch = useDispatch();
-
   const user = useSelector(getUser);
 
   const [form] = Form.useForm();
+
+
+  const [isEmptyArea, setStateArea] = useState<boolean>(true);
+
   const typingAreaRef = useRef<HTMLDivElement>(null);
   const activeChat = useSelector(getActiveChatId);
+
+  useLayoutEffect(() => {
+    const message = form.getFieldValue("message");
+    setStateArea(!message);
+  }, [form])
 
   const onSubmitHandler = (values: any) => {
     const messageText = values.message;
@@ -46,6 +53,9 @@ const TypingArea: React.FunctionComponent<Props>  = ({ scrollDown }: Props) => {
       }
 
       dispatch(ActionCreatorMessenger.addMessage(message));
+      form.resetFields();
+      form.getFieldInstance("message").resizableTextArea.textArea.focus();
+      setStateArea(true);
       scrollDown();
 
       hubConnection.invoke('Send', messageText, activeChat)
@@ -68,10 +78,23 @@ const TypingArea: React.FunctionComponent<Props>  = ({ scrollDown }: Props) => {
     }
   }
 
+
   return (
     <Form
       form={form}
-      onFinish={onSubmitHandler} 
+      name="typearea"
+      onFinish={onSubmitHandler}
+      onValuesChange={(values) => {
+        const messageText = values.message;
+        setStateArea(!messageText);
+      }}
+      onKeyDown={(e) => {
+        const isEnter = (e.key === 'Enter');
+            if (isEnter) {
+                e.preventDefault();
+                form.submit();
+            }
+      }}
       className="typing-area scroll"
       initialValues={{ message: "" }}
     >
@@ -93,7 +116,7 @@ const TypingArea: React.FunctionComponent<Props>  = ({ scrollDown }: Props) => {
         icon={<SendOutlined/>} 
         size="large"
         htmlType="submit"
-        disabled={form.getFieldValue("message") === ""}
+        disabled={isEmptyArea}
       />
     </Form>
   );

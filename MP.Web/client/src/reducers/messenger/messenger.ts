@@ -2,7 +2,7 @@ import { extend } from '../../utils/common';
 import { ActiveChat, Chat, ReduxEntity, User, Message, EnitytIdType } from '../../types/interfaces';
 import { AnyAction, Dispatch, Reducer } from 'redux';
 import { AxiosInstance } from 'axios';
-import { createChats } from '../../adapters/chats';
+import { createChats, createUsersFromChats } from '../../adapters/chats';
 import { createMessages, createUsersFromMessages } from '../../adapters/messages';
 import { RootState } from '../reducer';
 
@@ -56,7 +56,10 @@ const Operation = {
       .then((res) => {
         const data = res.data;
         const chats = createChats(data);
+        const users = createUsersFromChats(data);
+
         dispatch(ActionCreator.setChats(chats));
+        dispatch(ActionCreator.setUsers(users));
 
         if(chats.allIds.length) {
           dispatch(ActionCreator.setActiveChat(chats.allIds[0]));
@@ -127,8 +130,37 @@ const ActionCreator = {
     }
   }),
 
-
 };
+
+const addUser = (state: State, action: AnyAction) => {
+  let allIds =  state.users.allIds.slice();
+  const byId = extend({}, state.users.byId) as {
+    [id in EnitytIdType]: User
+  };
+
+  const usersIdsToAdd: string[] = [];
+  const users = action.payload;
+  users.allIds.forEach((item: string) => {
+    if(!allIds.includes(item)) {
+      usersIdsToAdd.push(item)
+    }
+  });
+
+  allIds = allIds.concat(usersIdsToAdd);
+  
+  usersIdsToAdd.forEach((item: string) => {
+    byId[item] = users.byId[item]
+  })
+
+  const newState = extend(state, {
+    users: {
+      allIds,
+      byId
+    }  
+  }) as State;
+
+  return newState;
+}
 
 
 const addMessage = (state: State, action: AnyAction) => {
@@ -193,7 +225,7 @@ const reducer: Reducer<State, AnyAction> = (state = initialState, action: AnyAct
   case ActionType.SET_ACTIVE_CHAT:
     return extend(state, {activeChatId: action.payload});
   case ActionType.SET_USERS:
-    return extend(state, {users: action.payload}); 
+    return addUser(state, action)
   case ActionType.SET_MESSAGES:
     return extend(state, {messages: action.payload}); 
   case ActionType.ADD_MESSAGE:

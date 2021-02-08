@@ -37,8 +37,8 @@ namespace MP.Application.User.Login
       
                 return new UserModel
                 {
-                    id = user.Id,
-                    email = user.Email,
+                    Id = user.Id,
+                    Email = user.Email,
                     DisplayName = user.DisplayName,
                     Token = _jwtGenerator.CreateToken(user),
                     Image = null
@@ -60,8 +60,8 @@ namespace MP.Application.User.Login
 
             return new UserModel
             {
-                id = user.Id,
-                email = user.Email,
+                Id = user.Id,
+                Email = user.Email,
                 DisplayName = user.DisplayName,
                 Image = null
             };

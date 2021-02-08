@@ -24,7 +24,9 @@ export interface Chat {
   id: number,
   name: string,
   lastMessageText: string,
-  lastMessageDateTime: Date
+  lastMessageDateTime: Date,
+  isGroup: boolean,
+  users: any[]
 }
 
 export interface ChatMessages {

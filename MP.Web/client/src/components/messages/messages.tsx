@@ -2,22 +2,33 @@ import React, { useRef, useEffect, useCallback, useLayoutEffect } from 'react';
 import { Button, Spin } from 'antd';
 import { LeftOutlined, CheckOutlined, WarningOutlined, LoadingOutlined  } from '@ant-design/icons';
 import { useSelector, useDispatch } from 'react-redux'
-import { getActiveChatId, getActiveChatMessages, getMessagesFetchingStatus, getChats, getMessages } from '../../reducers/messenger/selectors';
+import { getActiveChatId, getActiveChatMessages, getMessagesFetchingStatus, getChats, getMessages, getUsers } from '../../reducers/messenger/selectors';
 import { getUser } from '../../reducers/user/selectors';
 import { getMobileMessengerState, getHubConnectionState } from '../../reducers/app/selectors';
-import defaultAvatar from '../../assets/images/default-avatar.png';
 import ProfileLink from '../profile-link/profile-link';
 import Loading from '../loading/loading';
 import moment from 'moment';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { mediaQueries } from '../../constants';
 import { ActionCreator as ActionCreatorApp } from '../../reducers/app/app';
+import { ActionCreator as ActionCreatorMessenger } from '../../reducers/messenger/messenger';
 import { Operation as MessengerOperation } from '../../reducers/messenger/messenger';
 import TypingArea from '../typing-area/typing-area';
 import hubConnection from '../../signalR';
 import { MessageStatus } from '../../constants';
 
 import './messages.scss';
+import { MessageDto } from '../../types/dto';
+import { Chat } from '../../types/interfaces';
+
+
+/*const getTimeDiffInMinutes = (start: Date, end: Date) => {
+  const startDate = moment(start); 
+  const endDate = moment(end);
+  const duration = moment.duration(startDate.diff(endDate));
+  const mins = duration.asMinutes();
+  return mins;
+} */
 
 const Messages: React.FunctionComponent = () => {
 
@@ -27,12 +38,14 @@ const Messages: React.FunctionComponent = () => {
   const user = useSelector(getUser);
   const chatEntity = useSelector(getChats);
   const messageEntity = useSelector(getMessages);
+  const userEntity = useSelector(getUsers);
   const activeChat = useSelector(getActiveChatId);
   const activeMessagesIds = useSelector(getActiveChatMessages);
   const isMobileMessagesAreaOpen = useSelector(getMobileMessengerState);
   const isHubConnected = useSelector(getHubConnectionState);
   const isFetching = useSelector(getMessagesFetchingStatus);
 
+  const isTablet = useMediaQuery(mediaQueries.tablet);
   const isDesktop = useMediaQuery(mediaQueries.desktop);
 
   const messages = messageEntity.byId;
@@ -53,9 +66,32 @@ const Messages: React.FunctionComponent = () => {
 
       dispatch(MessengerOperation.getMessages(activeChat as number));
       hubConnection.invoke('JoinGroup', activeChat.toString());
+      hubConnection.on('Send', (message) => {
+        const messageItem: MessageDto = JSON.parse(message);
+          const parsedMessage = {
+            messageId: messageItem.MessageId,
+            userId: messageItem.UserId,
+            chatId: messageItem.ChatRoomId,
+            content: messageItem.MessageText,
+            dateTime: messageItem.DateTime,
+            status: MessageStatus.SUCCESS,
+          }
+          dispatch(ActionCreatorMessenger.addMessage(parsedMessage));
+      });
     }
   
   }, [activeChat, isHubConnected, dispatch, scrollDown]);
+
+
+  const renderChatName = (chatItem: Chat) => {
+    if(chatItem.isGroup) {
+      return <h3>{chatItem.name}</h3>
+    }
+
+    const userId = chatItem.users[0].id;
+    const user = userEntity.byId[userId];
+    return <ProfileLink user={user} />
+  }
 
   const renderMessagesArea = () => {
     if (!isMobileMessagesAreaOpen && !isDesktop) return null;
@@ -73,20 +109,19 @@ const Messages: React.FunctionComponent = () => {
               shape="circle" 
               icon={<LeftOutlined />} 
               onClick={() => { dispatch(ActionCreatorApp.changeMobileMessagesAreaState(false)) }} 
-              size="small"
+              size={isTablet ? 'middle': 'small'}
             />}
-          <img className="messages__avatar avatar avatar--small" src={defaultAvatar} alt="avatar"/>
-          <h3 className="messages__chatname">{activeChat && chatEntity.byId[activeChat].name}</h3>
+            {activeChat && renderChatName(chatEntity.byId[activeChat])}
         </header>
         <ul ref={messageListRef} className="messages__list scroll">
           {activeChat && activeMessagesIds.map((messageId: number, index, arr ) => {
             const message = messages[messageId];
             const previousSenderId = arr[index - 1] && messages[arr[index - 1]].userId;
             const isPreviousSenderSame = previousSenderId ? message.userId === previousSenderId: false;
-
             const isMineMessage = user?.id === message.userId;
+            
             return (<li key={`message-${index}`} className={`messages__item ${isMineMessage ? 'messages__item--mine' : 'messages__item--not-mine'}`}>
-              {!isMineMessage && !isPreviousSenderSame && <ProfileLink  />}
+              {!isMineMessage && !isPreviousSenderSame &&  <ProfileLink user={userEntity.byId[message.userId]} onlyImg={true} />}
               <div className="messages__inner">
                 <span>{message.content}</span>
                 <span className="messages__datetime">{moment(message.dateTime).format('HH:MM')}</span>

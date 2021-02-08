@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'; 
-import { Chat, ActiveChat, ReduxEntity, Message } from '../../types/interfaces';
+import { Chat, ActiveChat, ReduxEntity, Message, User } from '../../types/interfaces';
 import { RootState } from '../reducer';
 
 import NameSpace from '../name-spaces';
@@ -24,6 +24,10 @@ export const getUsersFetchingStatus = (state: RootState): boolean => {
 
 export const getMessagesFetchingStatus = (state: RootState): boolean => {
   return state[NAME_SPACE].isFetchingMessages;
+};
+
+export const getUsers = (state: RootState): ReduxEntity<User> => {
+  return state[NAME_SPACE].users;
 };
 
 
