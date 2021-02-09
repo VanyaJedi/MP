@@ -26,6 +26,7 @@ const Header: React.FunctionComponent = () => {
 
   const user = useSelector(getUser);
 
+
   const isMobile = useMediaQuery(mediaQueries.mobile);
   const isTablet = useMediaQuery(mediaQueries.tablet);
 
@@ -40,7 +41,7 @@ const Header: React.FunctionComponent = () => {
       <header className="header">
         {isDropMenuOpen ? 
           <DropMenu>
-            <ProfileLink user={user} styleName="header__profile-link profile-link--header" />
+            <ProfileLink user={user} />
           </DropMenu> : 
         null}
         <div className="header__wrapper wrapper">
@@ -55,7 +56,7 @@ const Header: React.FunctionComponent = () => {
     return (<header className="header">
        {isDropMenuOpen ? 
           <DropMenu >
-            <ProfileLink user={user} styleName="header__profile-link profile-link--header" />
+            <ProfileLink user={user} />
           </DropMenu> : 
         null}
       <div className="header__wrapper wrapper">
@@ -77,7 +78,7 @@ const Header: React.FunctionComponent = () => {
             user ?
             <>
               <div className="header__profile">
-                <ProfileLink user={user} styleName="header__profile profile-link--header" />
+                <ProfileLink user={user} />
                 <Button 
                   className="header__arrrowBtn" 
                   type="primary" 

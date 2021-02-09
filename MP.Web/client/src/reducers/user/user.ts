@@ -32,7 +32,6 @@ const Operation = {
     dispatch(ActionCreatorApp.setInitialFetchingStatus(true));
     return api.get(`/user/getuser`)
       .then((res) => {
-        console.log(res.data);
         const user: User | null = createUser(res.data);
         dispatch(ActionCreator.setUser(user));
         return user;
@@ -74,6 +73,7 @@ const Operation = {
       RememberMe: authData.rememberMe
     })
       .then((res) => {
+        console.log(res.data);
         const user: User | null = createUser(res.data);
         dispatch(ActionCreator.setUser(user));
         return true;

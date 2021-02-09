@@ -122,7 +122,15 @@ namespace MP.Web.Controllers
                 var userModel = _loginService.Handle(Email, Password, Remember);
                 var user = await _userManager.FindByIdAsync(userModel.Result.Id);
                 Response.Cookies.Append("X-Access-Token", userModel.Result.Token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
-                var response = JsonSerializer.Serialize(userModel.Result);
+                var userResponse = new UserDto()
+                {
+                    Id = userModel.Result.Id,
+                    UserName = userModel.Result.DisplayName,
+                    Email = userModel.Result.Email,
+                    Image = userModel.Result.Image,
+                };
+
+                var response = JsonSerializer.Serialize(userResponse);
                 return Ok(response);
             }
             catch (Exception ex)
