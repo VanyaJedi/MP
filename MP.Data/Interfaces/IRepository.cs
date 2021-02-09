@@ -13,5 +13,9 @@ namespace MP.Data.Interfaces
 
         IQueryable<T> Table { get; }
 
+        T GetById(string id);
+
+        T GetById(int id);
+
     }
 }

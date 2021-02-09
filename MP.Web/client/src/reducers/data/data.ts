@@ -1,26 +1,15 @@
 import { extend } from '../../utils/common';
-import { ActiveChat, Chat, ReduxEntity, User, Message, EnitytIdType } from '../../types/interfaces';
+import { Chat, ReduxEntity, User, Message, EnitytIdType } from '../../types/interfaces';
 import { AnyAction, Dispatch, Reducer } from 'redux';
 import { AxiosInstance } from 'axios';
 import { createChats, createUsersFromChats } from '../../adapters/chats';
 import { createMessages, createUsersFromMessages } from '../../adapters/messages';
+import { ActionCreator as ActionCreatorFetching } from '../fetching/fetching';
 import { RootState } from '../reducer';
-
-
-interface State {
-  isFetchingUsers: boolean,
-  isFetchingMessages: boolean,
-  activeChatId: ActiveChat
-
-  //entities
-  chats: ReduxEntity<Chat>,
-  messages: ReduxEntity<Message>,
-  users: ReduxEntity<User>,
-}
+import { createUser } from '../../adapters/user';
+import { State, addUser, addMessage, modifyMessage } from './utils';
 
 const initialState: State = {
-  isFetchingUsers: false,
-  isFetchingMessages: false,
   chats: {
     byId: {},
     allIds: [] as unknown as number[],
@@ -38,11 +27,10 @@ const initialState: State = {
 
 
 const ActionType = {
-  SET_FETCHING_USERS_STATUS: `SET_FETCHING_USERS_STATUS`,
-  SET_FETCHING_MESSAGES_STATUS: `SET_FETCHING_MESSAGES_STATUS`,
   SET_CHATS: `SET_CHATS`,
   SET_MESSAGES: `SET_MESSAGES`,
   SET_USERS: `SET_USERS`,
+  ADD_USER: `ADD_USER`,
   SET_ACTIVE_CHAT: 'SET_ACTIVE_CHAT_USER',
   ADD_MESSAGE: 'ADD_MESSAGE',
   MODIFY_MESSAGE: 'MODIFY_MESSAGE'
@@ -51,7 +39,7 @@ const ActionType = {
 
 const Operation = { 
   getChats: () => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
-    dispatch(ActionCreator.setFetchingUsersStatus(true));
+    dispatch(ActionCreatorFetching.setChatUsersFetching(true));
     return api.get(`/messenger/contacts`)
       .then((res) => {
         const data = res.data;
@@ -69,12 +57,12 @@ const Operation = {
         console.log(err);
       })
       .finally(() => {
-        dispatch(ActionCreator.setFetchingUsersStatus(false));
+        dispatch(ActionCreatorFetching.setChatUsersFetching(false));
       })
   },
 
   getMessages: (chatRoomId: number) => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
-    dispatch(ActionCreator.setFetchingMessagesStatus(true));
+    dispatch(ActionCreatorFetching.setMessagesFetching(true));
     return api.post('/messenger/messages', {
       chatRoomId
     }).then((res) => {
@@ -86,20 +74,23 @@ const Operation = {
       dispatch(ActionCreator.setMessages(messages));
     })
     .finally(() => {
-      dispatch(ActionCreator.setFetchingMessagesStatus(false));
+      dispatch(ActionCreatorFetching.setMessagesFetching(false));
     })
+  },
+
+  getUserById: (id: string) => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
+    return api.post('/user/getUser', {id})
+      .then((res) => {
+        const user = createUser(res.data);
+        console.log(user);
+        if(user) {
+          dispatch(ActionCreator.addUser(user));
+        }
+      })
   },
 }
 
 const ActionCreator = {
-  setFetchingMessagesStatus: (state: boolean) => ({
-    type: ActionType.SET_FETCHING_MESSAGES_STATUS,
-    payload: state
-  }),
-  setFetchingUsersStatus: (state: boolean) => ({
-    type: ActionType.SET_FETCHING_USERS_STATUS,
-    payload: state
-  }),
   setChats: (chats: ReduxEntity<Chat>) => ({
     type: ActionType.SET_CHATS,
     payload: chats
@@ -115,6 +106,10 @@ const ActionCreator = {
   setUsers: (users: ReduxEntity<User>) => ({
     type: ActionType.SET_USERS,
     payload: users
+  }),
+  addUser: (user: User) => ({
+    type: ActionType.ADD_USER,
+    payload: user
   }),
 
   addMessage: (message: Message) => ({
@@ -132,100 +127,18 @@ const ActionCreator = {
 
 };
 
-const addUser = (state: State, action: AnyAction) => {
-  let allIds =  state.users.allIds.slice();
-  const byId = extend({}, state.users.byId) as {
-    [id in EnitytIdType]: User
-  };
-
-  const usersIdsToAdd: string[] = [];
-  const users = action.payload;
-  users.allIds.forEach((item: string) => {
-    if(!allIds.includes(item)) {
-      usersIdsToAdd.push(item)
-    }
-  });
-
-  allIds = allIds.concat(usersIdsToAdd);
-  
-  usersIdsToAdd.forEach((item: string) => {
-    byId[item] = users.byId[item]
-  })
-
-  const newState = extend(state, {
-    users: {
-      allIds,
-      byId
-    }  
-  }) as State;
-
-  return newState;
-}
-
-
-const addMessage = (state: State, action: AnyAction) => {
-  const allIds =  state.messages.allIds.slice();
-  const byId = extend({}, state.messages.byId) as {
-    [id in EnitytIdType]: Message
-  };
-
-  const message = action.payload;
-  const messageId = message.messageId ? message.messageId : message.tempId;
-
-  byId[messageId] = message;
-  allIds.push(messageId);
-
-  const newState = extend(state, {
-    messages: {
-      allIds,
-      byId
-    }  
-  }) as State;
-
-  return newState;
-}
-
-const modifyMessage = (state: State, action: AnyAction) => {
-  const allIds =  state.messages.allIds.slice();
-  const byId = extend({}, state.messages.byId) as {
-    [id in EnitytIdType]: Message
-  };
-
-  const { id, message } = action.payload;
-  const messageId = message.messageId ? message.messageId : message.tempId;
-
-  if (allIds.includes(id)) {
-    const index = allIds.indexOf(id);
-    allIds[index] = messageId;
-
-    delete byId[action.payload.id];
-    byId[messageId] = message;
-  }
-
-  const newState = extend(state, {
-    messages: {
-      allIds,
-      byId
-    }  
-  }) as State;
-
-  return newState;
-
-}
 
 
 const reducer: Reducer<State, AnyAction> = (state = initialState, action: AnyAction) => {
   switch (action.type) {
-  case ActionType.SET_FETCHING_USERS_STATUS:
-    return extend(state, {isFetchingUsers: action.payload});
-  case ActionType.SET_FETCHING_MESSAGES_STATUS:
-    return extend(state, {isFetchingMessages: action.payload});
   case ActionType.SET_CHATS:
     return extend(state, {chats: action.payload});
   case ActionType.SET_ACTIVE_CHAT:
     return extend(state, {activeChatId: action.payload});
   case ActionType.SET_USERS:
     return addUser(state, action)
+  case ActionType.ADD_USER:
+    return addUser(state, action, true)
   case ActionType.SET_MESSAGES:
     return extend(state, {messages: action.payload}); 
   case ActionType.ADD_MESSAGE:

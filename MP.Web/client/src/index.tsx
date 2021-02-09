@@ -6,10 +6,16 @@ import { ActionCreator as ActionCreatorApp } from './reducers/app/app';
 import { Operation as UserOperation } from './reducers/user/user';
 import store from "./reducers/store";
 import { User } from './types/interfaces';
-import  { start }  from './signalR';
+import { start }  from './signalR';
+import { generateCSSVarForCorrectMobileHeight } from './utils/common';
 
 import './global.scss';
 import './app.less';
+
+generateCSSVarForCorrectMobileHeight();
+window.addEventListener('resize', () => {
+    generateCSSVarForCorrectMobileHeight();
+});
 
 store.dispatch(UserOperation.checkAuth())
   .then((user: User | null) => {

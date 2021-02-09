@@ -4,7 +4,7 @@ import { RootState } from '../reducer';
 
 import NameSpace from '../name-spaces';
 
-const NAME_SPACE = NameSpace.MESSENGER;
+const NAME_SPACE = NameSpace.DATA;
 
 export const getChats = (state: RootState): ReduxEntity<Chat> => {
   return state[NAME_SPACE].chats;
@@ -16,14 +16,6 @@ export const getMessages = (state: RootState): ReduxEntity<Message> => {
 
 export const getActiveChatId = (state: RootState): ActiveChat => {
   return state[NAME_SPACE].activeChatId;
-};
-
-export const getUsersFetchingStatus = (state: RootState): boolean => {
-  return state[NAME_SPACE].isFetchingUsers;
-};
-
-export const getMessagesFetchingStatus = (state: RootState): boolean => {
-  return state[NAME_SPACE].isFetchingMessages;
 };
 
 export const getUsers = (state: RootState): ReduxEntity<User> => {

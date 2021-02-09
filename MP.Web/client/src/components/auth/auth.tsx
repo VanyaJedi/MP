@@ -5,7 +5,8 @@ import { useHistory } from "react-router-dom";
 import { Link } from 'react-router-dom';
 import { Routes } from '../../constants';
 import { Operation as UserOperation } from '../../reducers/user/user';
-import { getErrorMessage, getSuccessMessage, getFetchingStatus } from '../../reducers/app/selectors';
+import { getErrorMessage, getSuccessMessage } from '../../reducers/app/selectors';
+import { getAuthFetchingStatus } from '../../reducers/fetching/selectors';
 import { ActionCreator as ActionCreatorApp } from '../../reducers/app/app';
 import { Alert } from 'antd';
 import { AppDispatch } from '../../reducers/store';
@@ -23,7 +24,7 @@ const Auth = () => {
 
   const errorMessage = useSelector(getErrorMessage);
   const successMessage = useSelector(getSuccessMessage);
-  const isFetching = useSelector(getFetchingStatus);
+  const isFetching = useSelector(getAuthFetchingStatus);
 
   const onLoginSubmit = useCallback((values: AuthData) => {
     dispatch(UserOperation.login(values))

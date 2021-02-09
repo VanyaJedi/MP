@@ -5,10 +5,11 @@ import moment from 'moment';
 import { useSelector, useDispatch } from 'react-redux'
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { mediaQueries } from '../../constants';
-import { getChats, getUsersFetchingStatus, getActiveChatId } from '../../reducers/messenger/selectors';
+import { getChats, getActiveChatId } from '../../reducers/data/selectors';
+import { getChatUsersFetchingStatus } from '../../reducers/fetching/selectors';
 import { getMobileMessengerState } from '../../reducers/app/selectors';
-import { Operation as MessengerOperation } from '../../reducers/messenger/messenger';
-import { ActionCreator as ActionCreatorMessenger } from '../../reducers/messenger/messenger';
+import { Operation as DataOperation } from '../../reducers/data/data';
+import { ActionCreator as ActionCreatorData } from '../../reducers/data/data';
 import Loading from '../loading/loading';
 import { ActionCreator as ActionCreatorApp } from '../../reducers/app/app';
 import { AppDispatch } from '../../reducers/store';
@@ -25,14 +26,14 @@ const Chats: React.FunctionComponent = () => {
   const chats = chatEntity.byId;
 
   const isMobileMessagesAreaOpen = useSelector(getMobileMessengerState);
-  const isFetching = useSelector(getUsersFetchingStatus);
+  const isFetching = useSelector(getChatUsersFetchingStatus);
 
   const isMobile = useMediaQuery(mediaQueries.mobile);
   const isTablet = useMediaQuery(mediaQueries.tablet);
   const isDesktop = useMediaQuery(mediaQueries.desktop);
 
   useEffect(() => {
-    dispatch(MessengerOperation.getChats());
+    dispatch(DataOperation.getChats());
   }, [dispatch])
 
   if ((isMobile || isTablet) && isMobileMessagesAreaOpen) return null;
@@ -55,7 +56,7 @@ const Chats: React.FunctionComponent = () => {
             className={`chats__item ${activeChat === chatItem ? 'chats__item--active' : ''}`}
             onClick={() => {
               !isDesktop && dispatch(ActionCreatorApp.changeMobileMessagesAreaState(true));
-              dispatch(ActionCreatorMessenger.setActiveChat(chatItem));
+              dispatch(ActionCreatorData.setActiveChat(chatItem));
             }}
           >
             <Avatar className="chats__avatar"  size="large" icon={<UserOutlined />}/>

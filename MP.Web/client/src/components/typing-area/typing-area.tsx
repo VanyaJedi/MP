@@ -3,9 +3,9 @@ import { useDispatch } from 'react-redux'
 import { Button, Input, Form } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import hubConnection from '../../signalR';
-import { getActiveChatId } from '../../reducers/messenger/selectors';
+import { getActiveChatId } from '../../reducers/data/selectors';
 import { getUser } from '../../reducers/user/selectors';
-import { ActionCreator as ActionCreatorMessenger } from '../../reducers/messenger/messenger';
+import { ActionCreator as ActionCreatorData } from '../../reducers/data/data';
 import { MessageStatus } from '../../constants'; 
 import { useSelector } from 'react-redux'
 import { Message } from '../../types/interfaces';
@@ -52,7 +52,7 @@ const TypingArea: React.FunctionComponent<Props>  = ({ scrollDown }: Props) => {
         status: MessageStatus.SENDING
       }
 
-      dispatch(ActionCreatorMessenger.addMessage(message));
+      dispatch(ActionCreatorData.addMessage(message));
       form.resetFields();
       form.getFieldInstance("message").resizableTextArea.textArea.focus();
       setStateArea(true);
@@ -69,11 +69,11 @@ const TypingArea: React.FunctionComponent<Props>  = ({ scrollDown }: Props) => {
             dateTime: messageItem.DateTime,
             status: MessageStatus.SUCCESS,
           }
-          dispatch(ActionCreatorMessenger.modifyMessage(tempId, parsedMessage));
+          dispatch(ActionCreatorData.modifyMessage(tempId, parsedMessage));
         })
         .catch((err) => {
           message.status = MessageStatus.FAIL;
-          dispatch(ActionCreatorMessenger.modifyMessage(tempId, message));
+          dispatch(ActionCreatorData.modifyMessage(tempId, message));
         })
     }
   }

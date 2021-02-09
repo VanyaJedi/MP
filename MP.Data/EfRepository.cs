@@ -30,6 +30,16 @@ namespace MP.Data
         /// </summary>
         public IQueryable<T> Table => Entity;
 
+        public T GetById(string id) 
+        {
+            return _entities.Find(id);
+        }
+
+        public T GetById(int id)
+        {
+            return _entities.Find(id);
+        }
+
 
     }
 }
