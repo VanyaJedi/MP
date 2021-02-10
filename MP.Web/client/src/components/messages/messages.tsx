@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useCallback, useLayoutEffect } from 'react';
 import { Button, Spin } from 'antd';
 import { LeftOutlined, CheckOutlined, WarningOutlined, LoadingOutlined  } from '@ant-design/icons';
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
 import { getActiveChatId, getActiveChatMessages, getChats, getMessages, getUsers } from '../../reducers/data/selectors';
 import { getUser } from '../../reducers/user/selectors';
 import { getMessagesFetchingStatus } from '../../reducers/fetching/selectors';
@@ -109,7 +109,7 @@ const Messages: React.FunctionComponent = () => {
               type="primary" 
               shape="circle" 
               icon={<LeftOutlined />} 
-              onClick={() => { dispatch(ActionCreatorApp.changeMobileMessagesAreaState(false)) }} 
+              onClick={() => dispatch(ActionCreatorApp.changeMobileMessagesAreaState(false))} 
               size={isTablet ? 'middle': 'small'}
             />}
             {activeChat && renderChatName(chatEntity.byId[activeChat])}

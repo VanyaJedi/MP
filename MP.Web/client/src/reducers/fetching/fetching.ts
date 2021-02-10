@@ -24,6 +24,10 @@ const FetchingType = {
   'AUTH': {
     name: 'isAuthFetching',
     type: 'setAuthFetching'
+  },
+  'PROFILE': {
+    name: 'isProfileFetching',
+    type: 'setProfileFetching'
   }
 }
 
@@ -40,13 +44,11 @@ const createActionCreators = () => {
 
 const ActionCreator = createActionCreators();
 
-
 const createFetchingReducerWithNamedType = (fetchingType: keyof typeof FetchingType) => {
   return (state = false, action: AnyAction) => {
     switch (action.type) {
-      case `FETCHING_${fetchingType}`:
-        const stateProperty = FetchingType[fetchingType].name;
-        return extend(state, { [stateProperty]: action.payload});
+      case fetchingType:
+        return action.payload;
       default:
         return state
     }
@@ -59,6 +61,7 @@ const reducer = combineReducers({
   isChatUserFetching: createFetchingReducerWithNamedType('CHAT_USERS'),
   isMessagesFetching: createFetchingReducerWithNamedType('MESSAGES'),
   isAuthFetching: createFetchingReducerWithNamedType('AUTH'),
+  isProfileFetching: createFetchingReducerWithNamedType('PROFILE'),
 })
 
 export { reducer, ActionCreator };

@@ -18,3 +18,7 @@ export const getMessagesFetchingStatus = (state: RootState): boolean => {
 export const getAuthFetchingStatus = (state: RootState): boolean => {
   return state[NAME_SPACE].isAuthFetching;
 };
+
+export const getProfileFetchingStatus = (state: RootState): boolean => {
+  return state[NAME_SPACE].isProfileFetching;
+};

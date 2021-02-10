@@ -2,7 +2,9 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Operation as DataOperation } from '../../reducers/data/data';
+import { getProfileFetchingStatus } from '../../reducers/fetching/selectors';
 import { getUsers } from '../../reducers/data/selectors';
+import Loading from '../loading/loading';
 
 import './profile.scss';
 
@@ -10,6 +12,7 @@ const Profile: React.FunctionComponent = () => {
   const dispatch = useDispatch();
 
   const users = useSelector(getUsers);
+  const isFetching = useSelector(getProfileFetchingStatus);
 
   const history = useHistory();
   const regEx = history.location.pathname.match(/^\/profile\/([^/]+)/);
@@ -29,12 +32,10 @@ const Profile: React.FunctionComponent = () => {
     dispatch(DataOperation.getUserById(id));
   }
 
-  
-
-
 
   return (
-   <div>{id}</div>
+    isFetching ? <Loading /> : 
+    <div>{id}</div>
   );
 
 };

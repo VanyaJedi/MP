@@ -79,6 +79,7 @@ const Operation = {
   },
 
   getUserById: (id: string) => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
+    dispatch(ActionCreatorFetching.setProfileFetching(true));
     return api.post('/user/getUser', {id})
       .then((res) => {
         const user = createUser(res.data);
@@ -86,6 +87,9 @@ const Operation = {
         if(user) {
           dispatch(ActionCreator.addUser(user));
         }
+      })
+      .finally(() => {
+        dispatch(ActionCreatorFetching.setProfileFetching(false));
       })
   },
 }
