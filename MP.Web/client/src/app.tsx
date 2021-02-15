@@ -6,12 +6,14 @@ import { getInitialFetchingStatus } from './reducers/app/selectors';
 import PrivateRoute from './components/private-route/private-route';
 import AuthPage from './pages/auth/auth';
 import MessengerPage from './pages/messenger/messenger';
+import ProfilePage from './pages/profile/profile';
 import { Routes } from './constants';
 import StartPage from './pages/start/start';
 import NotFoundPage from './pages/not-found/not-found';
 import Loading from './components/loading/loading';
 
-function App() {
+const App = () => {
+
 
   const user = useSelector(getUser);
   const isInitialFetching = useSelector(getInitialFetchingStatus);
@@ -28,7 +30,15 @@ function App() {
           user={user}
           path={Routes.MESSENGER} 
           exact
-          render={()=> <MessengerPage /> }
+          render={() => <MessengerPage /> }
+        />
+        <PrivateRoute
+          user={user}
+          path={`${Routes.PROFILE}/:id`}
+          exact
+          render={() => {
+            return <ProfilePage />
+          }}
         />
         <Route>
           <NotFoundPage />

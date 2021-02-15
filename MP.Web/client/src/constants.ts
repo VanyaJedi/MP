@@ -18,6 +18,7 @@ export enum Routes {
   ROOT = '/',
   AUTH = '/auth',
   MESSENGER = '/messenger',
+  PROFILE = '/profile'
 }
 
 export const navigationItems = [

@@ -5,11 +5,8 @@
   align-items: center;
 
   .profile-link__img {
-    width: 25px;
-    height: 25px;
-    margin-right: 7px;
-    background-color: transparent;
-    box-shadow: $white-shadow;
+    background-color: $secondary;
+    margin-right: 6px;
   }
 
   span {

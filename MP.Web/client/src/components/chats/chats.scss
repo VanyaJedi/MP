@@ -32,14 +32,13 @@
   }
 
   &:hover {
-    background-color: transparentize($secondary, 0.5);
+    opacity: transparentize($contrast, 0.5);
   }
 }
 
-.chats__avatar {
-  width: 36px;
-  height: 36px;
+.chats__avatar.ant-avatar {
   margin-right: 23px;
+  background-color: $secondary;
 }
 
 .chats__item-info {
@@ -73,9 +72,7 @@
     padding: 6px 30px;
   }
 
-  .chats__avatar {
-    width: 50px;
-    height: 50px;
+  .chats__avatar.ant-avatar {
     margin-right: 21px;
   }
 
@@ -96,19 +93,29 @@
 @media (min-width: $desktop-width) {
 
   .chats {
-    width: 350px;
+    width: 360px;
+    padding: 14px 5px;
     height: auto;
     overflow: auto;
+    background-color: rgba(161, 158, 176, 0.1);
+    border-radius: 20px;
   }
 
   .chats__item {
-    height: 47px;
+    height: 57px;
     padding: 5px 15px;
+
+    &--active {
+      background-color: #E8B458;
+      color: black;
+
+      .chats__name {
+        color: black;
+      }
+    }
   }
 
-  .chats__avatar {
-    width: 36px;
-    height: 36px;
+  .chats__avatar.ant-avatar{
     margin-right: 14px;
   }
 

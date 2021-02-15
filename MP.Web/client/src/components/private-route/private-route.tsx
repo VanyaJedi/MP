@@ -1,11 +1,11 @@
 import * as React from 'react';
-import {Route, Redirect, RouteProps} from 'react-router-dom';
+import {Route, Redirect, RouteProps, RouteComponentProps} from 'react-router-dom';
 import { Routes } from '../../constants';
 import { User } from '../../types/interfaces';
 
 type Props = RouteProps & {
   user: User | null;
-  render: () => React.ReactNode;
+  render: (propsHst?: RouteComponentProps) => JSX.Element;
 }
 
 const PrivateRoute = ({render, path, exact, user}: Props) => {

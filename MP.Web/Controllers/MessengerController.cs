@@ -58,14 +58,5 @@ namespace MP.Web.Controllers
             }
            
         }
-
-       /* // Текущая информация при загрузке страницы
-        [Authorize]
-        [HttpGet]
-        [Route("InitialData/")]
-        public string InitialData()
-        {
-            return JsonConvert.SerializeObject(_chatManager.GetInitialData(User.Identity.Name));
-        }*/
     }
 }

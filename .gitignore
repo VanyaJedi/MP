@@ -261,6 +261,7 @@ MP.Web/client/yarn-debug.log*
 MP.Web/client/yarn-error.log*
 
 MP.Web/client/.eslintcache
+MP.Web/appsettings.Production.json
 
 MP.Data/Migrations
 

@@ -28,8 +28,6 @@ export const createMessages = (chatId: number, data: MessageDto[]): ReduxEntity<
     result.allIds.push(data[i].MessageId); 
   }
 
-  
-
   return result;
 
 }

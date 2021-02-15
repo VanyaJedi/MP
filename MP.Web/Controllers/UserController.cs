@@ -13,6 +13,7 @@ using MP.Application.Services.EmailSender;
 using System.Web;
 using MP.Web.Models.UserModels;
 using MP.Application.Exceptions;
+using MP.Application.Models.UserModels;
 
 namespace MP.Web.Controllers
 {
@@ -97,7 +98,15 @@ namespace MP.Web.Controllers
                 return Unauthorized();
             }
 
-            var response = JsonSerializer.Serialize(userResult.Result);
+            var userResponse = new UserDto()
+            {
+                Id = userResult.Result.Id,
+                UserName = userResult.Result.DisplayName,
+                Email = userResult.Result.Email,
+                Image = userResult.Result.Image,
+            };
+
+            var response = JsonSerializer.Serialize(userResponse);
             return Ok(response);
         }
 
@@ -111,7 +120,7 @@ namespace MP.Web.Controllers
                 string Password = query.Password;
                 bool Remember = Convert.ToBoolean(query.RememberMe);
                 var userModel = _loginService.Handle(Email, Password, Remember);
-                var user = await _userManager.FindByIdAsync(userModel.Result.id);
+                var user = await _userManager.FindByIdAsync(userModel.Result.Id);
                 Response.Cookies.Append("X-Access-Token", userModel.Result.Token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
                 var response = JsonSerializer.Serialize(userModel.Result);
                 return Ok(response);
