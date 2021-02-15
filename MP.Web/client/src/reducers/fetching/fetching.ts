@@ -1,5 +1,4 @@
 import { AnyAction, combineReducers } from 'redux';
-import { extend } from '../../utils/common';
 
 interface FetchingAction {
   [key: string]: (state: boolean) => {
@@ -54,7 +53,6 @@ const createFetchingReducerWithNamedType = (fetchingType: keyof typeof FetchingT
     }
   }
 }
-
 
 const reducer = combineReducers({
   isInitFetching: createFetchingReducerWithNamedType('INIT'),
