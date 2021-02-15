@@ -1,9 +1,10 @@
 import React, { useRef, useEffect, useCallback, useLayoutEffect } from 'react';
 import { Button, Spin } from 'antd';
 import { LeftOutlined, CheckOutlined, WarningOutlined, LoadingOutlined  } from '@ant-design/icons';
-import { useSelector, useDispatch } from 'react-redux'
-import { getActiveChatId, getActiveChatMessages, getMessagesFetchingStatus, getChats, getMessages, getUsers } from '../../reducers/messenger/selectors';
+import { useSelector, useDispatch } from 'react-redux';
+import { getActiveChatId, getActiveChatMessages, getChats, getMessages, getUsers } from '../../reducers/data/selectors';
 import { getUser } from '../../reducers/user/selectors';
+import { getMessagesFetchingStatus } from '../../reducers/fetching/selectors';
 import { getMobileMessengerState, getHubConnectionState } from '../../reducers/app/selectors';
 import ProfileLink from '../profile-link/profile-link';
 import Loading from '../loading/loading';
@@ -11,8 +12,8 @@ import moment from 'moment';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { mediaQueries } from '../../constants';
 import { ActionCreator as ActionCreatorApp } from '../../reducers/app/app';
-import { ActionCreator as ActionCreatorMessenger } from '../../reducers/messenger/messenger';
-import { Operation as MessengerOperation } from '../../reducers/messenger/messenger';
+import { ActionCreator as ActionCreatorData } from '../../reducers/data/data';
+import { Operation as DataOperation } from '../../reducers/data/data';
 import TypingArea from '../typing-area/typing-area';
 import hubConnection from '../../signalR';
 import { MessageStatus } from '../../constants';
@@ -64,7 +65,7 @@ const Messages: React.FunctionComponent = () => {
     
     if (isHubConnected && activeChat) {
 
-      dispatch(MessengerOperation.getMessages(activeChat as number));
+      dispatch(DataOperation.getMessages(activeChat as number));
       hubConnection.invoke('JoinGroup', activeChat.toString());
       hubConnection.on('Send', (message) => {
         const messageItem: MessageDto = JSON.parse(message);
@@ -76,7 +77,7 @@ const Messages: React.FunctionComponent = () => {
             dateTime: messageItem.DateTime,
             status: MessageStatus.SUCCESS,
           }
-          dispatch(ActionCreatorMessenger.addMessage(parsedMessage));
+          dispatch(ActionCreatorData.addMessage(parsedMessage));
       });
     }
   
@@ -108,7 +109,7 @@ const Messages: React.FunctionComponent = () => {
               type="primary" 
               shape="circle" 
               icon={<LeftOutlined />} 
-              onClick={() => { dispatch(ActionCreatorApp.changeMobileMessagesAreaState(false)) }} 
+              onClick={() => dispatch(ActionCreatorApp.changeMobileMessagesAreaState(false))} 
               size={isTablet ? 'middle': 'small'}
             />}
             {activeChat && renderChatName(chatEntity.byId[activeChat])}

@@ -14,6 +14,8 @@ using System.Web;
 using MP.Web.Models.UserModels;
 using MP.Application.Exceptions;
 using MP.Application.Models.UserModels;
+using MP.Data.Interfaces;
+using MP.Web.Models.User;
 
 namespace MP.Web.Controllers
 {
@@ -26,6 +28,7 @@ namespace MP.Web.Controllers
         private readonly ILoginService _loginService;
         private readonly IRegistrationService _registrationService;
         private readonly IEmailSenderService _emailSenderService;
+        private readonly IRepository<AppUser> _usersRepository;
 
         // Constructor
         public UserController(
@@ -34,7 +37,8 @@ namespace MP.Web.Controllers
             SignInManager<AppUser> signInManager,
             ILoginService loginService,
             IRegistrationService registrationService, 
-            IEmailSenderService emailSenderService
+            IEmailSenderService emailSenderService,
+            IRepository<AppUser> usersRepository
             ) 
         {
 
@@ -43,6 +47,7 @@ namespace MP.Web.Controllers
             _loginService = loginService;
             _registrationService = registrationService;
             _emailSenderService = emailSenderService;
+            _usersRepository = usersRepository;
         }
 
 
@@ -122,7 +127,15 @@ namespace MP.Web.Controllers
                 var userModel = _loginService.Handle(Email, Password, Remember);
                 var user = await _userManager.FindByIdAsync(userModel.Result.Id);
                 Response.Cookies.Append("X-Access-Token", userModel.Result.Token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
-                var response = JsonSerializer.Serialize(userModel.Result);
+                var userResponse = new UserDto()
+                {
+                    Id = userModel.Result.Id,
+                    UserName = userModel.Result.DisplayName,
+                    Email = userModel.Result.Email,
+                    Image = userModel.Result.Image,
+                };
+
+                var response = JsonSerializer.Serialize(userResponse);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -223,6 +236,30 @@ namespace MP.Web.Controllers
         {
             _signInManager.SignOutAsync();
             Response.Cookies.Delete("X-Access-Token");
+        }
+
+        [HttpPost]
+        [Route("GetUser")]
+        [Authorize]
+        public IActionResult GetUser(IdQuery idQuery)
+        {
+            try
+            {
+                var user = _usersRepository.GetById(idQuery.Id);
+                var response = new UserDto()
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    UserName = user.UserName,
+                    Image = user.Photo
+                };
+                return Ok(JsonSerializer.Serialize(response));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error");
+            }
+            
         }
     }
 }

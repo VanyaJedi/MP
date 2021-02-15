@@ -4,6 +4,7 @@ import { AxiosInstance } from 'axios';
 import { AnyAction, Dispatch, Reducer } from 'redux';
 import { createUser } from '../../adapters/user'; 
 import { ActionCreator as ActionCreatorApp } from '../app/app';
+import { ActionCreator as ActionCreatorFetching } from '../fetching/fetching';
 import { RootState } from '../reducer';
 
 interface State {
@@ -29,10 +30,9 @@ const ActionCreator = {
 
 const Operation = {
   checkAuth: () => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance): Promise<User | null> => {
-    dispatch(ActionCreatorApp.setInitialFetchingStatus(true));
+    dispatch(ActionCreatorFetching.setInitFetching(true));
     return api.get(`/user/getuser`)
       .then((res) => {
-        console.log(res.data);
         const user: User | null = createUser(res.data);
         dispatch(ActionCreator.setUser(user));
         return user;
@@ -41,13 +41,13 @@ const Operation = {
         return null;
       })
       .finally(() => {
-        dispatch(ActionCreatorApp.setInitialFetchingStatus(false));
+        dispatch(ActionCreatorFetching.setInitFetching(false));
       });
   },
 
   registration: (regData: regData) => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
 
-    dispatch(ActionCreatorApp.setFetchingStatus(true));
+    dispatch(ActionCreatorFetching.setAuthFetching(true));
 
     return api.post(`/user/registration`, {
       Email: regData.email,
@@ -61,13 +61,13 @@ const Operation = {
       return false;
     })
     .finally(()=>{
-      dispatch(ActionCreatorApp.setFetchingStatus(false));
+      dispatch(ActionCreatorFetching.setAuthFetching(false));
     })
   },
 
   login: (authData: AuthData) => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
 
-    dispatch(ActionCreatorApp.setFetchingStatus(true));
+    dispatch(ActionCreatorFetching.setAuthFetching(true));
     return api.post(`/user/login`, {
       Email: authData.email,
       Password: authData.password,
@@ -84,12 +84,12 @@ const Operation = {
         return false;
       })
       .finally(()=>{
-        dispatch(ActionCreatorApp.setFetchingStatus(false));
+        dispatch(ActionCreatorFetching.setAuthFetching(false));
       })
   },
 
   resetPassword: (authData: AuthData) => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
-    dispatch(ActionCreatorApp.setFetchingStatus(true));
+    dispatch(ActionCreatorFetching.setAuthFetching(true));
     return api.post(`/user/forgotpassword`, {
       Email: authData.email,
       Password: authData.password,
@@ -103,7 +103,7 @@ const Operation = {
       return false;
     })
     .finally(()=>{
-      dispatch(ActionCreatorApp.setFetchingStatus(false));
+      dispatch(ActionCreatorFetching.setAuthFetching(false));
     })
   },
 
