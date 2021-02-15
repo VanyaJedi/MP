@@ -127,7 +127,6 @@ namespace mp
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
             app.UseSpaStaticFiles();
             
 

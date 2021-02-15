@@ -35,6 +35,10 @@
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
+  <ItemGroup>
+   <None Include="appsettings.Production.json" CopyToPublishDirectory="Always" />
+   <None Include="appsettings.Development.json" CopyToPublishDirectory="Always" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MP.Application\MP.Application.csproj" />
@@ -65,5 +69,7 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
+
+  <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>
