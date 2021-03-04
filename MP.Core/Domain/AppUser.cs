@@ -8,7 +8,7 @@ namespace MP.Core.Domain
     public class AppUser : IdentityUser
     {
         public string DisplayName { get; set; }
-        public byte[] Photo { get; set; }
+        public string Photo { get; set; }
         public List<ChatRoomUser> ChatRoomUser { get; set; }
 
         public AppUser()

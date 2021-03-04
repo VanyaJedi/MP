@@ -18,7 +18,7 @@ window.addEventListener('resize', () => {
 });
 
 store.dispatch(UserOperation.checkAuth())
-  .then((user: User | null) => {
+  .then((user: User) => {
     if (user) {
       return start();
     }

@@ -66,6 +66,37 @@ body {
   align-items: center;
 }
 
+.ant-btn.btn {
+  border: none;
+  width: 44px;
+  height: 44px;
+
+  &:hover, &:focus, &:active {
+    opacity: 0.9;
+
+  }
+
+  &--blue {
+   background: $gradient-02;
+   box-shadow: $shadow;
+
+   &:hover, &:focus, &:active {
+    background: $gradient-02;
+    box-shadow: $shadow;
+   }
+  }
+
+  &--pink {
+    background: $gradient-01;
+    box-shadow: $shadow;
+ 
+    &:hover, &:focus, &:active {
+     background: $gradient-01;
+     box-shadow: $shadow;
+    }
+   }
+}
+
 .scroll {
   scrollbar-width: thin;
 

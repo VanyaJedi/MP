@@ -1,11 +1,14 @@
 @import '../../variables.scss';
 
-
 .chats {
   width: 100%;
   height: 100%;
   padding-top: 10px;
   overflow: auto;
+  background-color: $blue-04;
+  background-image: url('../../assets/images/potato-pattern.png');
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 
@@ -19,7 +22,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  background-color: transparentize($secondary, 0.3);
+  background-color: $blue-03;
   width: 100%;
   height: 55px;
   border-radius: 5px;
@@ -63,10 +66,6 @@
 
 @media (min-width: $tablet-width) {
 
-  .chats {
-    //height: calc(100vh - 50px);
-  }
-
   .chats__item {
     height: 77px;
     padding: 6px 30px;
@@ -93,12 +92,17 @@
 @media (min-width: $desktop-width) {
 
   .chats {
-    width: 360px;
-    padding: 14px 5px;
+    width: 493px;
+    padding: 14px 0;
     height: auto;
     overflow: auto;
     background-color: rgba(161, 158, 176, 0.1);
-    border-radius: 20px;
+    background-color: $blue-03;
+    background-image: none;
+  }
+
+  .chats__list {
+    width: 100%;
   }
 
   .chats__item {
@@ -106,12 +110,7 @@
     padding: 5px 15px;
 
     &--active {
-      background-color: #E8B458;
-      color: black;
-
-      .chats__name {
-        color: black;
-      }
+      background: $gradient-02;
     }
   }
 

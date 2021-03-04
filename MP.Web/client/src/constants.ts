@@ -26,13 +26,15 @@ export const navigationItems = [
     id: 1,
     name: 'Home',
     icon: HomeFilled,
-    route: Routes.ROOT
+    route: Routes.ROOT,
+    color: 'pink'
   },
   {
     id: 2,
     name: 'Messenger',
     icon: MessageFilled,
-    route: Routes.MESSENGER
+    route: Routes.MESSENGER,
+    color: 'blue'
   },
 ]
 

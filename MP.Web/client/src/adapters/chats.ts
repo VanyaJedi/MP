@@ -21,10 +21,13 @@ export const  createChats = (data: ChatDto[]): ReduxEntity<Chat> => {
       isGroup: data[i].IsGroup,
       lastMessageText: data[i].LastMessage,
       lastMessageDateTime: data[i].LastDateTime,
-      users: data[i].Users.map((item: UserDto) =>({
+      users: data[i].Users.map((item: UserDto): User =>({
         id: item.Id,
-        name: item.UserName
-      }))
+        name: item.UserName,
+        email: item.Email,
+        avatar: item.Image
+      })),
+      avatar: data[i].Photo
     }
 
     result.allIds.push(data[i].ChatRoomId);
@@ -54,6 +57,8 @@ export const createUsersFromChats = (data: ChatDto[]): ReduxEntity<User> => {
       result.byId[id] = {
         id: data[i].Users[j].Id,
         name: data[i].Users[j].UserName,
+        email: data[i].Users[j].Email,
+        avatar: data[i].Users[j].Image,
       }
       result.allIds.push(id);
     }

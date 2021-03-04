@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Route, Switch, BrowserRouter } from 'react-router-dom';
+import { Route, Switch, BrowserRouter  } from 'react-router-dom';
 import { useSelector } from 'react-redux'
 import { getUser } from './reducers/user/selectors';
 import { getInitialFetchingStatus } from './reducers/fetching/selectors';

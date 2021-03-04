@@ -1,4 +1,4 @@
-$background-dark: #0D0C14;
+$background-dark: #000000;
 //$user-list: #100D11;
 $user-list: #05040D;
 $type-area: #353138; 
@@ -30,7 +30,23 @@ $popup-index: 10000;
 $nav-index: 1000;
 
 
-$primary: #0D0C14;
+$primary: #000000;
+$blue-01: #717983;
+$blue-02: #50505E;
+$blue-03: #2C2C36;
+$blue-04: #121212;
+$light-blue: #F0F3F6;
 $secondary: #1a1820;
 $contrast: #DB5E71;
 $contrast-yellow: #E8B458;
+
+
+$gradient-01: linear-gradient(269.8deg, #FE49CF -0.46%, #FE58A2 28.61%, #FF6B65 67.45%);
+$gradient-02: linear-gradient(90deg, #355EE1 0%, #8D6DF0 100%);
+$gradient-03: linear-gradient(90deg, #3EDDAA 0%, #3BBCE8 100%);
+$gradient-04: linear-gradient(90deg, #F7CF4B 0%, #FF856A 91.53%);
+$gradient-05: linear-gradient(90deg, #FDAB6D 0%, #DE676C 91.53%);
+$gradient-06: linear-gradient(90deg, #45C0E4 0%, #BF90FC 91.53%);
+
+$shadow: 0px 6px 15px rgba(255, 92, 151, 0.55);
+

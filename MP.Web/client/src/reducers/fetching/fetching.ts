@@ -27,6 +27,10 @@ const FetchingType = {
   'PROFILE': {
     name: 'isProfileFetching',
     type: 'setProfileFetching'
+  },
+  'AVATAR': {
+    name: 'isAvatarLoading',
+    type: 'setAvatarLoading'
   }
 }
 
@@ -60,6 +64,7 @@ const reducer = combineReducers({
   isMessagesFetching: createFetchingReducerWithNamedType('MESSAGES'),
   isAuthFetching: createFetchingReducerWithNamedType('AUTH'),
   isProfileFetching: createFetchingReducerWithNamedType('PROFILE'),
+  isAvatarLoading: createFetchingReducerWithNamedType('AVATAR'),
 })
 
 export { reducer, ActionCreator };

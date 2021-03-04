@@ -14,6 +14,7 @@ import { ActionCreator as ActionCreatorApp } from '../../reducers/app/app';
 import { Link } from 'react-router-dom';
 import { Routes } from '../../constants';
 import Nav from '../nav/nav';
+import Logo from '../logo/logo';
 
 import './styles/header.scss';
 
@@ -21,15 +22,10 @@ const { Search } = Input;
 
 
 const Header: React.FunctionComponent = () => {
-
   const dispatch = useDispatch();
-
   const user = useSelector(getUser);
-
-
   const isMobile = useMediaQuery(mediaQueries.mobile);
   const isTablet = useMediaQuery(mediaQueries.tablet);
-
   const isDropMenuOpen = useSelector(getProfileMenuState);
   const toggleProfileMenuHandler = useCallback(() => {
     dispatch(ActionCreatorApp.toggleProfileMenu(!isDropMenuOpen))
@@ -41,7 +37,7 @@ const Header: React.FunctionComponent = () => {
       <header className="header">
         {isDropMenuOpen ? 
           <DropMenu>
-            <ProfileLink user={user} />
+            <ProfileLink styleName="profile-link--drop" user={user} />
           </DropMenu> : 
         null}
         <div className="header__wrapper wrapper">
@@ -56,7 +52,7 @@ const Header: React.FunctionComponent = () => {
     return (<header className="header">
        {isDropMenuOpen ? 
           <DropMenu >
-            <ProfileLink user={user} />
+            <ProfileLink styleName="profile-link--drop" user={user} />
           </DropMenu> : 
         null}
       <div className="header__wrapper wrapper">
@@ -78,9 +74,8 @@ const Header: React.FunctionComponent = () => {
             user ?
             <>
               <div className="header__profile">
-                <ProfileLink user={user} />
+                <ProfileLink styleName="profile-link--drop" user={user} />
                 <Button 
-                  className="header__arrrowBtn" 
                   type="primary" 
                   shape="circle" 
                   icon={isDropMenuOpen ? <CaretUpOutlined /> : <CaretDownOutlined />} 
@@ -100,7 +95,7 @@ const Header: React.FunctionComponent = () => {
           }
            
         </div>
-        <h1 className="header__title">MetaPotato</h1>
+        <Logo />
         <div className="header__right">
           <Search placeholder="search" style={{width: 350}} enterButton={false}/>
         </div>

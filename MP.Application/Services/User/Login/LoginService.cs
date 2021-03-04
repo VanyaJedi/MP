@@ -41,7 +41,7 @@ namespace MP.Application.User.Login
                     Email = user.Email,
                     DisplayName = user.DisplayName,
                     Token = _jwtGenerator.CreateToken(user),
-                    Image = null
+                    Image = user.Photo
                 };
 
             }
@@ -63,7 +63,7 @@ namespace MP.Application.User.Login
                 Id = user.Id,
                 Email = user.Email,
                 DisplayName = user.DisplayName,
-                Image = null
+                Image = user.Photo
             };
         }
     }

@@ -28,11 +28,19 @@ namespace MP.Web.ChatHub
         public async Task<string> Send(string message, int chatRoomId)
         {
             string chatRoom = Convert.ToString(chatRoomId);
-            string xConnectionId = Context.ConnectionId;
-            string xLogin = Context.User.Identity.Name;
-            var messageItem = _chatManager.AddMessageToPool(message, xLogin, chatRoomId);
+            string userName = Context.User.Identity.Name;
+            var messageItem = _chatManager.AddMessageToPool(message, userName, chatRoomId);
             var response = JsonConvert.SerializeObject(messageItem);
-            await this.Clients.OthersInGroup(chatRoom).SendAsync("Send", response);
+            await Clients.OthersInGroup(chatRoom).SendAsync("Send", response);
+            return response;
+        }
+
+        public async Task<string> AddContact(int chatRoomId)
+        {
+            string chatRoom = Convert.ToString(chatRoomId);
+            var contact = _chatRoomRepositary.GetById(chatRoomId);
+            var response = JsonConvert.SerializeObject(contact);
+            await Clients.OthersInGroup(chatRoom).SendAsync("AddContact", response);
             return response;
         }
 

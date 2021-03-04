@@ -4,7 +4,9 @@ import { AxiosInstance } from 'axios';
 import { AnyAction, Dispatch, Reducer } from 'redux';
 import { createUser } from '../../adapters/user'; 
 import { ActionCreator as ActionCreatorApp } from '../app/app';
+import { ActionCreator as ActionCreatorData } from '../data/data';
 import { ActionCreator as ActionCreatorFetching } from '../fetching/fetching';
+import { getUsers } from '../data/selectors';
 import { RootState } from '../reducer';
 
 interface State {
@@ -116,6 +118,26 @@ const Operation = {
       .catch((error) => {
         dispatch(ActionCreatorApp.setMessageError(error.response.data));
         return false;
+      })
+  },
+
+  setPhoto: (image: string) => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
+    dispatch(ActionCreatorFetching.setAvatarLoading(true));
+    return api.post('user/setphoto', {
+      Id: image
+    })
+      .then((res) => {
+        const user: User | null = createUser(res.data);
+        dispatch(ActionCreator.setUser(user));
+        if (user) {
+          dispatch(ActionCreatorData.modifyUser(user))
+        }
+      })
+      .catch((error) => {
+        return false;
+      })
+      .finally(() => {
+        dispatch(ActionCreatorFetching.setAvatarLoading(false));
       })
   }
 };

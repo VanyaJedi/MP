@@ -28,6 +28,6 @@ const hubConnection = new signalR.HubConnectionBuilder()
   await hubConnection.stop();
 }
 
-export { start, stop} ;
+export { start, stop };
 
 export default hubConnection;

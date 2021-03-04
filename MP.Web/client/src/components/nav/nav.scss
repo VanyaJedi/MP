@@ -17,12 +17,17 @@
   border-radius: 50%;
   box-shadow: $white-shadow;
 
+  .btn {
+    height: 63px;
+    width: 63px;
+  }
+
   .nav__item-svg {
     background-color: transparent;
     font-size: 25px;
-    color: #8A8A8A;
+    color: $light-blue;
 
-      &:hover {
+    &:hover {
       opacity: 0.3;
     }
   }
@@ -47,6 +52,11 @@
     height: 82px;
     width: 82px;
 
+    .btn {
+      height: 82px;
+      width: 82px;
+    }
+
     .nav__item-svg { 
       font-size: 30px;
     }
@@ -63,7 +73,10 @@
     margin-right: 15px;
     height: 40px;
     width: 40px;
-    //background-color: transparent;
+    .btn {
+      height: 40px;
+      width: 40px;
+    }
 
     .nav__item-svg {
       font-size: 20px;

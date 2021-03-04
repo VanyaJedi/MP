@@ -3,12 +3,14 @@ export interface Action<T> {
   payload: T;
 }
 
-export interface User {
+export interface UserObj {
   id: string,
   name: string,
   email?: string,
   avatar?: string
 }
+
+export type User = UserObj | null;
 
 export interface Message {
   messageId?: number,
@@ -26,7 +28,8 @@ export interface Chat {
   lastMessageText: string,
   lastMessageDateTime: Date,
   isGroup: boolean,
-  users: any[]
+  users: any[],
+  avatar: string
 }
 
 export interface ChatMessages {

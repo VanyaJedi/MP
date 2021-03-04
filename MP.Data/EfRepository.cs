@@ -40,6 +40,18 @@ namespace MP.Data
             return _entities.Find(id);
         }
 
+        public void AddToContext(T entity)
+        {
+            if(entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+            Entity.Add(entity);
+        }
+
+        public void SaveContext() => _context.SaveChanges();
+
+
 
     }
 }

@@ -22,3 +22,7 @@ export const getAuthFetchingStatus = (state: RootState): boolean => {
 export const getProfileFetchingStatus = (state: RootState): boolean => {
   return state[NAME_SPACE].isProfileFetching;
 };
+
+export const getAvatarLoadingStatus = (state: RootState): boolean => {
+  return state[NAME_SPACE].isAvatarLoading;
+};

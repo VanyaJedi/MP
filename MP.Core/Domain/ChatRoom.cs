@@ -5,7 +5,6 @@ using System.Text;
 
 namespace MP.Core.Domain
 {    
-    // Таблица ChatRoom
     public class ChatRoom
     {
         [Key]

@@ -13,6 +13,6 @@ namespace MP.Application.Models.Messages
         public string LastMessage;
         public DateTime LastDateTime;
         public int ChatRoomId;
-        public byte[] Photo;
+        public string Photo;
     }
 }

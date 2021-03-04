@@ -257,9 +257,38 @@ namespace MP.Web.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("Error");
+                return BadRequest(ex.Message);
             }
-            
+        }
+
+        [HttpPost]
+        [Route("SetPhoto")]
+        [Authorize]
+        public IActionResult SetPhoto(PhotoQuery photoQuery)
+        {
+            try
+            {
+                var userName = User.Identity.Name;
+                if (userName == null)  return Unauthorized();
+                var userResult = _loginService.GetUser(userName);
+                if (userResult.Result == null) return Unauthorized();
+
+                var user = _usersRepository.GetById(userResult.Result.Id);
+                user.Photo = photoQuery.Photo;
+                _usersRepository.SaveContext();
+                var response = new UserDto()
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    UserName = user.UserName,
+                    Image = user.Photo
+                };
+                return Ok(JsonSerializer.Serialize(response));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

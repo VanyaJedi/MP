@@ -15,10 +15,10 @@ interface Props {
 }
 
 const ProfileLink: React.FunctionComponent<Props> = ({ user, styleName, onlyImg = false }: Props) => { 
-  
+  console.log(styleName);
   return (
     <Link to={`${Routes.PROFILE}/${user?.id}`} className={`profile-link ${styleName}`}>
-      <Avatar className="profile-link__img" icon={<UserOutlined />} />
+      <Avatar className="profile-link__img" src={user?.avatar} icon={<UserOutlined />} />
       {!onlyImg && <span>{user && user.name}</span>}
     </Link>
   );

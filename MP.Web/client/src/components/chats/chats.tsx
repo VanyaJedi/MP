@@ -13,6 +13,7 @@ import { ActionCreator as ActionCreatorData } from '../../reducers/data/data';
 import Loading from '../loading/loading';
 import { ActionCreator as ActionCreatorApp } from '../../reducers/app/app';
 import { AppDispatch } from '../../reducers/store';
+import hubConnection from '../../signalR';
 
 import './chats.scss';
 
@@ -34,6 +35,10 @@ const Chats: React.FunctionComponent = () => {
 
   useEffect(() => {
     dispatch(DataOperation.getChats());
+    hubConnection.on('AddContact', (res: any) => {
+      console.log(1);
+      console.log(JSON.parse(res))
+    });
   }, [dispatch])
 
   if ((isMobile || isTablet) && isMobileMessagesAreaOpen) return null;
@@ -59,7 +64,7 @@ const Chats: React.FunctionComponent = () => {
               dispatch(ActionCreatorData.setActiveChat(chatItem));
             }}
           >
-            <Avatar className="chats__avatar"  size="large" icon={<UserOutlined />}/>
+            <Avatar className="chats__avatar"  size="large" src={chats[chatItem].avatar} icon={<UserOutlined />}/>
             <div className="chats__item-info">
               <h4 className="chats__name">{chats[chatItem].name}</h4>
               <span className="chats__content" >{chats[chatItem].lastMessageText}</span>

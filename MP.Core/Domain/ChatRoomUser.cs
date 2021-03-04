@@ -5,8 +5,6 @@ using System.Text;
 
 namespace MP.Core.Domain
 {
-
-    // Связующая сущность для реализации отношения многие-ко-многим
     public class ChatRoomUser
     {
         public int ChatRoomId { get; set; }

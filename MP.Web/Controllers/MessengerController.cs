@@ -56,7 +56,23 @@ namespace MP.Web.Controllers
             {
                 return BadRequest(ex.Message);
             }
-           
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        [Route("AddToContacts/")]
+        public IActionResult AddToContacts(UserNameQuery userNameQuery) {
+            try
+            {
+                var contactItem = _chatManager.AddUserToContacts(User.Identity.Name, userNameQuery.Name);
+                var response = JsonConvert.SerializeObject(contactItem);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

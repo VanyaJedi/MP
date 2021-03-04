@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { User } from '../../types/interfaces';
 import { Routes } from '../../constants';
 import Nav from '../nav/nav';
+import Logo from '../logo/logo';
 
 interface Props {
   toggleProfileMenuHandler: () => void;
@@ -21,7 +22,7 @@ const MobileHeader: React.FunctionComponent<Props> = ({ toggleProfileMenuHandler
           user ?
           <Button 
             type="primary" 
-            shape="circle" 
+            shape="circle"
             icon={isDropMenuOpen ? <CloseOutlined />: <MenuFoldOutlined />} 
             onClick={toggleProfileMenuHandler} 
             size="middle"
@@ -33,11 +34,10 @@ const MobileHeader: React.FunctionComponent<Props> = ({ toggleProfileMenuHandler
               icon={<LoginOutlined />}
             />
           </Link>
-          
         }
         
       </div>
-      <h1 className="header__title">MetaPotato</h1>
+      <Logo />
       <div className="header__right">
         <Button type="primary" shape="circle" icon={<SearchOutlined />} size="middle"/>
       </div>

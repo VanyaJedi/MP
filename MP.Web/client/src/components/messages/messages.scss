@@ -10,8 +10,11 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: $primary;
   overflow: hidden;
+  background-color: $blue-04;
+  background-image: url('../../assets/images/potato-pattern.png');
+  background-size: cover;
+  background-repeat: no-repeat;
 
   .ant-spin {
     color: #ffffff;
@@ -22,7 +25,7 @@
   display: flex;
   align-items: center;
   background-color: $secondary;
-  height: 40px;
+  height: 45px;
   padding: 0 10px;
 }
 
@@ -78,7 +81,7 @@
     
     .messages__inner {
       border-top-right-radius: 0;
-      background-color: $contrast;   
+      background: $gradient-01;   
     }
 
     .messages__datetime {
@@ -92,7 +95,7 @@
 
     .messages__inner {
       border-top-left-radius: 0;
-      background-color: $guest-message; 
+      background-color: $blue-03; 
     }
 
     .messages__datetime {
@@ -112,6 +115,9 @@
 
 @media (min-width: $tablet-width) { 
 
+  .messages {
+    background-image: url('../../assets/images/potato-pattern-desktop.png');
+  }
   .messages__inner {
     max-width: 600px;
     padding: 28px;

@@ -17,5 +17,7 @@ namespace MP.Data.Interfaces
 
         T GetById(int id);
 
+        public void AddToContext(T entity);
+        void SaveContext();
     }
 }

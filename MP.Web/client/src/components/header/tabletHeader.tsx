@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { User } from '../../types/interfaces';
 import { Routes } from '../../constants';
 import Nav from '../nav/nav';
+import Logo from '../logo/logo';
 
 const { Search } = Input;
 
@@ -39,7 +40,7 @@ const TabletHeader: React.FunctionComponent<Props> = ({ toggleProfileMenuHandler
           
         }
       </div>
-      <h1 className="header__title">MetaPotato</h1>
+      <Logo />
       <div className="header__right">
         <Search placeholder="search" style={{width: 162}} enterButton={false}/>
       </div>

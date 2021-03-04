@@ -6,17 +6,14 @@
   flex-direction: column;
   z-index: 10000;
   height: calc(100vh - 45px - 10px);
-  width: 85.33%;
+  width: 100%;
   color: white;
   top: 45px;
-  left: 10px;
   padding: 13px 16px;
-  border-radius: 25px;
   border-top: none;
   background-color: $primary;
   transform: translateX(-100%);
   animation: showMobileMenu 0.3s ease-in-out forwards;
-  filter: drop-shadow(0 0 30px rgba(206, 66, 108, 0.25));
 
 
   .profile-link {
@@ -74,18 +71,30 @@
 @media (min-width: $tablet-width) { 
 
   .drop-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 25px 30px;
-    font-size: 24px;
-    width: 65.23%;
-
+    font-size: 16px;
+    width: 41.11%;
 
     .profile-link {
-      margin-bottom: 35px;
+      margin-bottom: 40px;
+    }
+  }
+
+  .drop-menu__list, form {
+    margin-left: -23px;
+  }
+
+  .drop-menu__list {
+    li {
+      margin-bottom: 26px;
     }
   }
 
   .drop-menu__list-icon {
-    margin-right: 21px;
+    margin-right: 14px;
     font-size: 24px;
   } 
 
@@ -104,6 +113,7 @@
      background-color: $secondary;
      font-size: 16px;
      padding: 22px 30px;
-     filter: drop-shadow(2px 2px 51px rgba(206, 66, 108, 0.25));
+     background: linear-gradient(175.32deg, #355EE1 9.06%, #8D6DF0 77.53%);
+
   }
 }

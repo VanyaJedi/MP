@@ -7,7 +7,7 @@ import { createMessages, createUsersFromMessages } from '../../adapters/messages
 import { ActionCreator as ActionCreatorFetching } from '../fetching/fetching';
 import { RootState } from '../reducer';
 import { createUser } from '../../adapters/user';
-import { State, addUser, addMessage, modifyMessage } from './utils';
+import { State, addUser, addMessage, modifyMessage, modifyUser } from './utils';
 
 const initialState: State = {
   chats: {
@@ -31,6 +31,7 @@ const ActionType = {
   SET_MESSAGES: `SET_MESSAGES`,
   SET_USERS: `SET_USERS`,
   ADD_USER: `ADD_USER`,
+  MODIFY_USER: `MODIFY_USER`,
   SET_ACTIVE_CHAT: 'SET_ACTIVE_CHAT_USER',
   ADD_MESSAGE: 'ADD_MESSAGE',
   MODIFY_MESSAGE: 'MODIFY_MESSAGE'
@@ -49,7 +50,7 @@ const Operation = {
         dispatch(ActionCreator.setChats(chats));
         dispatch(ActionCreator.setUsers(users));
 
-        if(chats.allIds.length) {
+        if(chats.allIds.length && !getState().DATA.activeChatId) {
           dispatch(ActionCreator.setActiveChat(chats.allIds[0]));
         }
       })
@@ -80,10 +81,9 @@ const Operation = {
 
   getUserById: (id: string) => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
     dispatch(ActionCreatorFetching.setProfileFetching(true));
-    return api.post('/user/getUser', {id})
+    return api.post('/user/getuser', {id})
       .then((res) => {
         const user = createUser(res.data);
-        console.log(user);
         if(user) {
           dispatch(ActionCreator.addUser(user));
         }
@@ -91,6 +91,17 @@ const Operation = {
       .finally(() => {
         dispatch(ActionCreatorFetching.setProfileFetching(false));
       })
+  },
+
+  addToContacts: (name: string) => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
+    return api.post('/messenger/addToContacts', { name })
+      .then((res) => {
+        const newContact = res.data;
+        const chats = createChats([newContact]);
+        dispatch(ActionCreator.setChats(chats));
+        return newContact;
+      })
+
   },
 }
 
@@ -115,12 +126,14 @@ const ActionCreator = {
     type: ActionType.ADD_USER,
     payload: user
   }),
-
+  modifyUser: (user: User) => ({
+    type: ActionType.MODIFY_USER,
+    payload: user
+  }),
   addMessage: (message: Message) => ({
     type: ActionType.ADD_MESSAGE,
     payload: message
   }),
-
   modifyMessage: (id: number, message: Message) => ({
     type: ActionType.MODIFY_MESSAGE,
     payload: {
@@ -143,6 +156,8 @@ const reducer: Reducer<State, AnyAction> = (state = initialState, action: AnyAct
     return addUser(state, action)
   case ActionType.ADD_USER:
     return addUser(state, action, true)
+  case ActionType.MODIFY_USER:
+    return modifyUser(state, action)
   case ActionType.SET_MESSAGES:
     return extend(state, {messages: action.payload}); 
   case ActionType.ADD_MESSAGE:

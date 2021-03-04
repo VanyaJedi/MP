@@ -15,6 +15,7 @@ export interface ChatDto {
   LastMessage:string,
   LastDateTime: Date,
   ChatRoomId: number
+  Photo: string
 } 
 
 export interface UserDto {

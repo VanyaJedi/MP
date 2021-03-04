@@ -2,7 +2,6 @@
 
 .messenger {
   display: flex;
-  padding-bottom: 10px;
 }
 
 .messenger__messages {
@@ -12,6 +11,5 @@
 @media (min-width: $desktop-width) {
   .messenger {
     padding-top: 20px;
-    padding-left: 20px;
   }
 }

@@ -2,6 +2,11 @@
 
 .header {
   height: 45px;
+
+  button {
+    background-color: transparent;
+    border: none;
+  }
 }
 
 .header__wrapper {
@@ -16,7 +21,6 @@
   line-height: 21px;
   color: #fff;
   margin-bottom: 0;
-  text-shadow: 0 0 5px $text-purple-dark, 0 0 10px $text-purple-dark, 0 0 20px $background-dark, 0 0 30px $background-dark, 0 0 40px $background-dark, 0 0 55px $background-dark, 0 0 75px $background-dark;
 }
 
 .header__left, .header__right {

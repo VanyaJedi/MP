@@ -51,6 +51,27 @@ export const addUser = (state: State, action: AnyAction, isSingle = false) => {
   return newState;
 }
 
+export const modifyUser = (state: State, action: AnyAction) => {
+  let allIds =  state.users.allIds.slice();
+  const byId = extend({}, state.users.byId) as {
+    [id in EnitytIdType]: User
+  };
+
+  const user = action.payload;
+  if (user) {
+    byId[user.id] = user;
+  }
+  
+  const newState = extend(state, {
+    users: {
+      allIds,
+      byId
+    }  
+  }) as State;
+
+  return newState;
+}
+
 
 export const addMessage = (state: State, action: AnyAction) => {
   const allIds =  state.messages.allIds.slice();
