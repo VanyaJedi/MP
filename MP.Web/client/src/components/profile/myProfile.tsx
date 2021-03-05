@@ -119,6 +119,7 @@ const MyProfile: React.FunctionComponent<Props> = ({ user }: Props) => {
         </ul>
       </section>
        <Modal
+        width={300}
         visible={!!img}
         okText="Set picture"
         onCancel={() => setImg('')}

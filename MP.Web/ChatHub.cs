@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 using MP.Application.Services.Messages.ChatManager;
 using MP.Data.Interfaces;
 using MP.Core.Domain;
-using System.Linq;
-using MP.Application.Models.Messages;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc;
 
 namespace MP.Web.ChatHub
 {
@@ -32,15 +29,6 @@ namespace MP.Web.ChatHub
             var messageItem = _chatManager.AddMessageToPool(message, userName, chatRoomId);
             var response = JsonConvert.SerializeObject(messageItem);
             await Clients.OthersInGroup(chatRoom).SendAsync("Send", response);
-            return response;
-        }
-
-        public async Task<string> AddContact(int chatRoomId)
-        {
-            string chatRoom = Convert.ToString(chatRoomId);
-            var contact = _chatRoomRepositary.GetById(chatRoomId);
-            var response = JsonConvert.SerializeObject(contact);
-            await Clients.OthersInGroup(chatRoom).SendAsync("AddContact", response);
             return response;
         }
 

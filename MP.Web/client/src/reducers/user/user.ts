@@ -124,7 +124,7 @@ const Operation = {
   setPhoto: (image: string) => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
     dispatch(ActionCreatorFetching.setAvatarLoading(true));
     return api.post('user/setphoto', {
-      Id: image
+      Photo: image
     })
       .then((res) => {
         const user: User | null = createUser(res.data);
