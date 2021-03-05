@@ -62,9 +62,7 @@ const Messages: React.FunctionComponent = () => {
   })  
 
   useEffect(() => {
-    
     if (isHubConnected && activeChat) {
-
       dispatch(DataOperation.getMessages(activeChat as number));
       hubConnection.invoke('JoinGroup', activeChat.toString());
       hubConnection.on('Send', (message) => {

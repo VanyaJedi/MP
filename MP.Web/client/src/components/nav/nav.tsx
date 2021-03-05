@@ -7,12 +7,11 @@ import { navigationItems } from '../../constants';
 import { Button } from 'antd';
 import './nav.scss';
 
-
 const Nav: React.FunctionComponent = () => { 
   const dispatch = useDispatch();
   const history = useHistory();
   useEffect(() => {
-    return history.listen(()=>{
+    return history.listen((location, action)=>{
       dispatch(ActionCreatorApp.toggleProfileMenu(false));
     })
  },[history, dispatch]) 
@@ -27,6 +26,7 @@ const Nav: React.FunctionComponent = () => {
                 shape="circle" 
                 type="primary" 
                 className={`btn btn--${item.color}`} 
+                htmlType="button"
                 icon={<item.icon className="nav__item-svg" />}
               />
               </Link>

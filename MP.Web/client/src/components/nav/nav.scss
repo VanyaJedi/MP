@@ -1,6 +1,5 @@
 @import '../../variables.scss';
 
-
 .nav {
   position: absolute;
   z-index: $nav-index;
@@ -10,7 +9,7 @@
 }
 
 .nav__item {
-  margin-right: 15px;
+  margin-right: 8px;
   height: 63px;
   width: 63px;
   background-color: $nav-button;

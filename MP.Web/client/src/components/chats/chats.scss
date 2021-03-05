@@ -1,9 +1,11 @@
 @import '../../variables.scss';
+$avatarBgColors: $gradient-01, $gradient-02, $gradient-03, $gradient-04, $gradient-05, $gradient-06;
+
 
 .chats {
   width: 100%;
   height: 100%;
-  padding-top: 10px;
+  padding-top: 16px;
   overflow: auto;
   background-color: $blue-04;
   background-image: url('../../assets/images/potato-pattern.png');
@@ -13,7 +15,7 @@
 
 
 .chats__list {
-  width: 97%;
+  width: 91%;
   margin: 0 auto;
 }
 
@@ -24,7 +26,7 @@
   align-items: center;
   background-color: $blue-03;
   width: 100%;
-  height: 55px;
+  height: 56px;
   border-radius: 5px;
   padding: 6px 15px;
   margin-bottom: 4px;
@@ -40,8 +42,13 @@
 }
 
 .chats__avatar.ant-avatar {
+  display: flex;
   margin-right: 23px;
-  background-color: $secondary;
+  //background-color: $secondary;
+  //background: nth($avatarBgColors,1);
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
 }
 
 .chats__item-info {
@@ -59,8 +66,8 @@
 .chats__datetime {
   position: absolute;
   font-size: 11px;
-  top: 5px;
-  right: 5px;
+  top: 9px;
+  right: 13px;
 }
 
 

@@ -37,6 +37,7 @@ const Operation = {
       .then((res) => {
         const user: User | null = createUser(res.data);
         dispatch(ActionCreator.setUser(user));
+        dispatch(ActionCreatorData.addUser(user));
         return user;
       })
       .catch(() => {
@@ -68,7 +69,6 @@ const Operation = {
   },
 
   login: (authData: AuthData) => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
-
     dispatch(ActionCreatorFetching.setAuthFetching(true));
     return api.post(`/user/login`, {
       Email: authData.email,
@@ -78,6 +78,7 @@ const Operation = {
       .then((res) => {
         const user: User | null = createUser(res.data);
         dispatch(ActionCreator.setUser(user));
+        dispatch(ActionCreatorData.addUser(user));
         return true;
       })
       .catch((error) => {

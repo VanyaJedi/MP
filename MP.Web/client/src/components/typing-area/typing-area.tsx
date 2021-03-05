@@ -105,7 +105,7 @@ const TypingArea: React.FunctionComponent<Props>  = ({ scrollDown }: Props) => {
         <TextArea
           className="scroll"
           ref={typingAreaRef} 
-          autoSize={{ minRows:2, maxRows: 8 }}
+          autoSize={{ minRows:1, maxRows: 8 }}
           placeholder="Text message here..."
         ></TextArea>  
       </Form.Item>

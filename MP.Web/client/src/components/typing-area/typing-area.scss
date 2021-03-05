@@ -4,9 +4,9 @@
   overflow: auto;
   min-height: 50px;
   flex-grow: 0;
-  width: 97.86%;
+  width: 100%;
   margin: 0 auto;
-  min-height: 40px;
+  min-height: 64px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -14,6 +14,7 @@
   border-radius: 4px;
   padding-right: 5px;
   overflow-y: hidden;
+  background-color: transparentize($primary, 0.7);
 
 
   .typing-area__form-item {
@@ -30,11 +31,18 @@
     width: 36px;
     height: 36px;
     margin-left: 10px;
+    background-color: transparent;
+    border: none;
+    color: $contrast;
+
+    &:disabled {
+      color: $blue-01;
+    }
   }
 }
 
 .typing-area__text {
-  flex-grow: 1;
+  width: 242px;
   padding: 8px 16px;
   min-height: 30px;
   word-wrap: break-word;
@@ -51,10 +59,15 @@
   &:focus {
     color: #ffffff;
   }
+
+  .ant-input {
+    width: 100px;
+  }
 }
 
 .typing-area__send-btn {
   flex-shrink: 0;
+  
 }
 
 
