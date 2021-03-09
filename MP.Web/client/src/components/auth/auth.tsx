@@ -5,16 +5,16 @@ import { useHistory } from "react-router-dom";
 import { Link } from 'react-router-dom';
 import { Routes } from '../../constants';
 import { Operation as UserOperation } from '../../reducers/user/user';
-import { getErrorMessage, getSuccessMessage } from '../../reducers/app/selectors';
 import { getAuthFetchingStatus } from '../../reducers/fetching/selectors';
 import { ActionCreator as ActionCreatorApp } from '../../reducers/app/app';
-import { Alert } from 'antd';
+import Logo from '../logo/logo';
+import { message } from 'antd';
 import { AppDispatch } from '../../reducers/store';
 import { AuthData } from '../../types/interfaces';
 import Login from './login';
 import Reset from './reset';
 import Register from './register';
-import { start } from '../../signalR';
+import { start, stop } from '../../signalR';
 
 const Auth = () => {
   const [formType, setFormType] = useState('login');
@@ -22,20 +22,20 @@ const Auth = () => {
   const dispatch: AppDispatch = useDispatch();
   const history = useHistory();
 
-  const errorMessage = useSelector(getErrorMessage);
-  const successMessage = useSelector(getSuccessMessage);
   const isFetching = useSelector(getAuthFetchingStatus);
 
-  const onLoginSubmit = useCallback((values: AuthData) => {
+  const onLoginSubmit = useCallback(async (values: AuthData) => {
+    await stop();
     dispatch(UserOperation.login(values))
-    .then((isSuccess: boolean)=>{
-      if(isSuccess) {
-        history.push(Routes.ROOT);
-        return start()  
-      }
+    .then(()=>{
+      history.push(Routes.ROOT);
+      return start()  
     })
     .then(() => {
       dispatch(ActionCreatorApp.setHubConnectionState(true))
+    })
+    .catch((error: string) => {
+      message.error(error)
     })
   }, [dispatch, history]);
 
@@ -89,29 +89,7 @@ const Auth = () => {
 
   return (
     <div className="auth">
-      {errorMessage && 
-        <Alert 
-          message={errorMessage} 
-          type="error" 
-          banner
-          closable
-          onClose={()=>{
-            dispatch(ActionCreatorApp.setMessageError(null))
-          }}
-        />}
-
-      {successMessage && 
-        <Alert 
-          message={successMessage} 
-          type="success" 
-          banner
-          closable
-          onClose={()=>{
-            dispatch(ActionCreatorApp.setMessageSuccess(null));
-            setFormType('login');
-          }}
-        />}
-      <h1 className="auth__title"><Link to={Routes.ROOT}>MetaPotato</Link></h1>
+      <Logo />
       <div className="auth__container">
         {renderForm()}
       </div>

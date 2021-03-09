@@ -6,7 +6,6 @@ import { createUser } from '../../adapters/user';
 import { ActionCreator as ActionCreatorApp } from '../app/app';
 import { ActionCreator as ActionCreatorData } from '../data/data';
 import { ActionCreator as ActionCreatorFetching } from '../fetching/fetching';
-import { getUsers } from '../data/selectors';
 import { RootState } from '../reducer';
 
 interface State {
@@ -49,9 +48,7 @@ const Operation = {
   },
 
   registration: (regData: regData) => (dispatch: Dispatch, getState: () => RootState, api: AxiosInstance) => {
-
     dispatch(ActionCreatorFetching.setAuthFetching(true));
-
     return api.post(`/user/registration`, {
       Email: regData.email,
       UserName: regData.username,
@@ -79,12 +76,9 @@ const Operation = {
         const user: User | null = createUser(res.data);
         dispatch(ActionCreator.setUser(user));
         dispatch(ActionCreatorData.addUser(user));
-        return true;
       })
       .catch((error) => {
-        console.log(error.message);
-        dispatch(ActionCreatorApp.setMessageError('error'));
-        return false;
+        throw Error(error.message) ;
       })
       .finally(()=>{
         dispatch(ActionCreatorFetching.setAuthFetching(false));

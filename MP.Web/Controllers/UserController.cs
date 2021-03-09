@@ -140,6 +140,7 @@ namespace MP.Web.Controllers
             }
             catch (Exception ex)
             {
+                
                 return BadRequest(ex.InnerException.Message);
             }
         }

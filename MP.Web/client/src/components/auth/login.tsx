@@ -28,7 +28,7 @@ const Login: FC<Props> = ({ onSubmitHandler, isFetching, setFormType }) => {
         onFinish={onSubmitHandler}
       >
         <Form.Item
-          label="email"
+          label="Email"
           name="email"
           rules={[{ required: true, message: 'Please input your username!' }]}
         >

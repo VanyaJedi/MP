@@ -1,7 +1,6 @@
 import * as signalR from '@microsoft/signalr';
 import axios from "axios";
 
-
 const hubConnection = new signalR.HubConnectionBuilder()
   .configureLogging(signalR.LogLevel.None)
   .withUrl("/chat", {
@@ -13,7 +12,6 @@ const hubConnection = new signalR.HubConnectionBuilder()
   })
   .build();
 
-
  const  start = async ()=> {
   try {
     await hubConnection.start();
@@ -24,7 +22,7 @@ const hubConnection = new signalR.HubConnectionBuilder()
   }
 }
 
- const stop = async () => {
+const stop = async () => {
   await hubConnection.stop();
 }
 
