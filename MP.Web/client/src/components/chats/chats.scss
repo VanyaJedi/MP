@@ -73,6 +73,15 @@ $avatarBgColors: $gradient-01, $gradient-02, $gradient-03, $gradient-04, $gradie
 
 @media (min-width: $tablet-width) {
 
+  .chats {
+    padding-top: 17px;
+  }
+
+  .chats__list {
+    width: 97%;
+  }
+  
+
   .chats__item {
     height: 77px;
     padding: 6px 30px;

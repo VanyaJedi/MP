@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect'; 
-import { Chat, ActiveChat, ReduxEntity, Message, User } from '../../types/interfaces';
+import { Chat, ActiveChat, ReduxEntity, Message, User, UserObj } from '../../types/interfaces';
+import { getUser } from '../user/selectors';
 import { RootState } from '../reducer';
 
 import NameSpace from '../name-spaces';
@@ -22,7 +23,6 @@ export const getUsers = (state: RootState): ReduxEntity<User> => {
   return state[NAME_SPACE].users;
 };
 
-
 export const getActiveChatMessages = createSelector(
   [getMessages, getActiveChatId], 
   (messageEntity, activeChatId) => {
@@ -34,5 +34,14 @@ export const getActiveChatMessages = createSelector(
       }
     }
     return messageIds;
+  }
+);
+
+export const getUsersInActiveChat = createSelector(
+  [getChats, getActiveChatId], 
+  (chats: ReduxEntity<Chat>, activeChatId: ActiveChat) => {
+    if (chats.allIds.length && activeChatId) {
+      return chats.byId[activeChatId].users;
+    }
   }
 );

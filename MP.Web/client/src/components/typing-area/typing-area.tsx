@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { Button, Input, Form } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import hubConnection from '../../signalR';
-import { getActiveChatId } from '../../reducers/data/selectors';
+import { getActiveChatId, getUsersInActiveChat } from '../../reducers/data/selectors';
 import { getUser } from '../../reducers/user/selectors';
 import { ActionCreator as ActionCreatorData } from '../../reducers/data/data';
 import { MessageStatus } from '../../constants'; 
@@ -13,7 +13,6 @@ import { uniqueId } from '../../utils/common';
 import { MessageDto } from '../../types/dto';
 
 import './typing-area.scss';
-
 
 const { TextArea } = Input;
 
@@ -27,12 +26,11 @@ const TypingArea: React.FunctionComponent<Props>  = ({ scrollDown }: Props) => {
   const user = useSelector(getUser);
 
   const [form] = Form.useForm();
-
-
   const [isEmptyArea, setStateArea] = useState<boolean>(true);
 
   const typingAreaRef = useRef<HTMLDivElement>(null);
   const activeChat = useSelector(getActiveChatId);
+  const usersInChat = useSelector(getUsersInActiveChat);
 
   useLayoutEffect(() => {
     const message = form.getFieldValue("message");
@@ -43,7 +41,6 @@ const TypingArea: React.FunctionComponent<Props>  = ({ scrollDown }: Props) => {
     const messageText = values.message;
     const tempId = uniqueId();
     if (messageText && activeChat && user) {
-
       const message: Message = {
         tempId,
         userId: user.id,
@@ -75,6 +72,11 @@ const TypingArea: React.FunctionComponent<Props>  = ({ scrollDown }: Props) => {
           message.status = MessageStatus.FAIL;
           dispatch(ActionCreatorData.modifyMessage(tempId, message));
         })
+      if(usersInChat) {
+        const usersNameInActiveChat = usersInChat.map((user) => user.name);
+        console.log(usersNameInActiveChat);
+        hubConnection.invoke('NoticeUser', ...usersNameInActiveChat);  
+      }
     }
   }
 

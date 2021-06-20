@@ -32,6 +32,12 @@ namespace MP.Web.ChatHub
             return response;
         }
 
+        public async Task NoticeUser(string users)
+        {
+            //await Clients.User(userName).SendAsync("NoticeUser");
+            await Clients.Users(users).SendAsync("NoticeUser");
+        }
+
         public async Task JoinGroup(string chatRoomId)
         {
             if (_ChatRommConnectionId.ContainsKey(Context.ConnectionId))

@@ -1,7 +1,8 @@
-import { Chat, ReduxEntity, User } from '../types/interfaces';
+import { Chat, ReduxEntity, User, UserObj } from '../types/interfaces';
 import { ChatDto, UserDto } from '../types/dto';
 
 export const  createChats = (data: ChatDto[]): ReduxEntity<Chat> => {
+
   const result = {
     byId: {} as {[key: number]: Chat},
     allIds: [] as unknown as number[]
@@ -9,6 +10,8 @@ export const  createChats = (data: ChatDto[]): ReduxEntity<Chat> => {
   if (!data) {
     return result;
   }
+
+  data.sort((a, b) => a.LastDateTime > b.LastDateTime ? -1: 1);
 
   for(let i = 0; i < data.length; i++){
     if(result.allIds.includes(data[i].ChatRoomId)) {
@@ -21,7 +24,7 @@ export const  createChats = (data: ChatDto[]): ReduxEntity<Chat> => {
       isGroup: data[i].IsGroup,
       lastMessageText: data[i].LastMessage,
       lastMessageDateTime: data[i].LastDateTime,
-      users: data[i].Users.map((item: UserDto): User =>({
+      users: data[i].Users.map((item: UserDto): UserObj =>({
         id: item.Id,
         name: item.UserName,
         email: item.Email,

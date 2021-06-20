@@ -22,6 +22,7 @@ namespace MP.Application.User.Login
         public LoginService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IJwtGenerator jwtGenerator)
         {
             _userManager = userManager;
+
             _signInManager = signInManager;
             _jwtGenerator = jwtGenerator;
         }

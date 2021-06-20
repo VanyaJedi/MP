@@ -1,15 +1,34 @@
 ﻿using MP.Core.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace MP.Data
 {   
     public class DataContext : IdentityDbContext<AppUser>
     {
+        public DataContext()
+        {
+        }
+
+        /*public DataContext(DbContextOptions options) : base(options)
+        {
+        }*/
+
         public override DbSet<AppUser>  Users { get; set; }
         public DbSet<ChatRoom> ChatRooms { get; set; }
         public DbSet<Message> Messages { get; set; }
-        public DataContext(DbContextOptions<DataContext> options) : base(options) {
+        public IConfiguration Configuration { get; }
+        public DataContext(DbContextOptions<DataContext> options, IConfiguration configuraion) : base(options) {
+            Configuration = configuraion;
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            if (!options.IsConfigured)
+            {
+                options.UseSqlServer(Configuration["connections:development"]);
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

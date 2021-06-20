@@ -37,7 +37,8 @@ namespace mp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+           // services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration["connections:development"]));
             services.AddDefaultIdentity<AppUser>().AddEntityFrameworkStores<DataContext>();
             services.AddControllersWithViews();
             services.AddTransient(typeof(IRepository<>), typeof(EfRepository<>));

@@ -28,7 +28,7 @@ export interface Chat {
   lastMessageText: string,
   lastMessageDateTime: Date,
   isGroup: boolean,
-  users: any[],
+  users: UserObj[],
   avatar: string
 }
 

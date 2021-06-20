@@ -1,5 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import useBoolean from '../../hooks/useBoolean';
+import { Modal, Button } from 'antd';
 import { MailOutlined, MessageOutlined } from '@ant-design/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { Operation as DataOperation } from '../../reducers/data/data';
@@ -19,6 +21,7 @@ import { ChatDto } from '../../types/dto';
 
 const Profile: React.FunctionComponent = () => {
   const dispatch: AppDispatch = useDispatch();
+  const [modalState, setModalState] = useBoolean(false);
 
   const currentUser = useSelector(getUser);
   const users = useSelector(getUsers);
@@ -71,7 +74,6 @@ const Profile: React.FunctionComponent = () => {
         dispatch(ActionCreatorData.setActiveChat(chatId));
         dispatch(ActionCreatorApp.changeMobileMessagesAreaState(true));
         hubConnection.invoke('JoinGroup', chatId.toString());
-        hubConnection.invoke('AddContact', chatId);
         history.push('/messenger');
       })
     }
@@ -82,29 +84,42 @@ const Profile: React.FunctionComponent = () => {
   return (
     isFetching ? <Loading /> : 
     isMyProfile ? <MyProfile user={user} /> : (
-      <section className="profile">
-        <div className="profile__user">
-          {user && user.avatar ? <img src={user.avatar} className="profile__avatar" alt="avatar" /> : <img src={cutePotato} className="profile__avatar" alt="avatar" />}
-          <div>
-            <h1 className="profile__title">{user && user.name}</h1>
-            <ul className="profile__user-info">
-              <li>
-                <MailOutlined /> {user && user.email}
-              </li>
-            </ul>  
+      <>
+        <section className="profile">
+          <div className="profile__user">
+            {user && user.avatar ? 
+              <img src={user.avatar} className="profile__avatar" alt="avatar" /> : 
+              <img src={cutePotato} className="profile__avatar" alt="avatar" 
+            />}
+            <div>
+              <h1 className="profile__title">{user && user.name}</h1>
+              <ul className="profile__user-info">
+                <li>
+                  <MailOutlined /> {user && user.email}
+                </li>
+              </ul>  
+            </div>
           </div>
-        </div>
-        <ul className="profile__actions"> 
-          <li>
-            <button 
-              onClick={addChatHandler} 
-              type="button"
-            >
-              <MessageOutlined /> Написать сообщение
-            </button>
-          </li>
-        </ul>
-      </section>
+          <ul className="profile__actions"> 
+            <li>
+              <button 
+                onClick={() => setModalState(true)} 
+                type="button"
+              >
+                <MessageOutlined /> Написать сообщение
+              </button>
+            </li>
+          </ul>
+        </section>
+        <Modal 
+          visible={modalState}
+          //footer={}
+        >
+          <textarea>
+
+          </textarea>
+        </Modal>
+      </>
     )
   );
 

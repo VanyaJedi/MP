@@ -77,6 +77,10 @@ const Messages: React.FunctionComponent = () => {
           }
           dispatch(ActionCreatorData.addMessage(parsedMessage));
       });
+      hubConnection.on('NoticeUser', () => {
+        console.log('here');
+        dispatch(DataOperation.getChats());
+      });
     }
   
   }, [activeChat, isHubConnected, dispatch, scrollDown]);
